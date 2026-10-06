@@ -9,6 +9,7 @@ Requires Python 3.9 or newer. There are no third-party Python packages, Node dep
 ```sh
 python3 generate.py
 python3 check_site.py
+python3 -m unittest discover -s tests -v
 python3 -m http.server 8000 --directory dist --bind 127.0.0.1
 ```
 
@@ -18,15 +19,17 @@ Open http://127.0.0.1:8000. Serve `dist` at the root of a domain or local server
 
 - `agents.json`: seven profiles, public business contacts, and their source citations
 - `generate.py`: deterministic homepage, profile, and 404 page generator
-- `check_site.py`: checks profile count, local links, anchors, page headings, image alt text, and selected excluded claims
+- `check_site.py`: checks the profile set, citation indices, local link containment, anchors, explicit tag balance, page headings, image alt text, and selected excluded claims
 - `dist/index.html`: homepage
 - `dist/realtors/*.html`: seven profile pages
 - `dist/assets/site.css`: responsive styles; imports Google Fonts
 - `dist/assets/coles-crossing-morning.jpg`: attributed local photograph
 - `ATTRIBUTION.md`: provenance, image license, and rights notes
+- `tests/test_site.py`: dependency-free generator and checker regression tests
 - `docs/export-verification.md`: scope, checks, and known limitations
+- `docs/pr1-triage.md`: review findings, fixes, and browser verification
 
-Edit profile facts in `agents.json` and templates in `generate.py`, then regenerate and check. Edit styles in `dist/assets/site.css`; that file and the photograph are source assets and must remain tracked. The existing generator expects the checked-in output directories to exist.
+Edit profile facts in `agents.json` and templates in `generate.py`, then regenerate and check. Edit styles in `dist/assets/site.css`; that file and the photograph are source assets and must remain tracked. The generator expects the checked-in output directories to exist. It removes obsolete generated `*.html` profile pages from `dist/realtors` after successful rendering and writes; keep that directory for generated profiles. It refuses a profile directory that resolves outside `dist`.
 
 ## Content and publication status
 
