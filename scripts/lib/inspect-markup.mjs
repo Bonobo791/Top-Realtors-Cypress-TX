@@ -91,11 +91,11 @@ export function inspectMarkup(root, file) {
         fail('Backslash local path');
         continue;
       }
-      let target = decoded
-        ? decoded.startsWith('/')
-          ? path.resolve(root, '.' + decoded)
-          : path.resolve(path.dirname(file), decoded)
-        : file;
+      let target;
+      if (!decoded) target = file;
+      else if (decoded.startsWith('/'))
+        target = path.resolve(root, '.' + decoded);
+      else target = path.resolve(path.dirname(file), decoded);
       if (!contained(realRoot, target)) {
         fail('Reference outside build');
         continue;
