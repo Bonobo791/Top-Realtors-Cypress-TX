@@ -29,7 +29,7 @@ Open http://127.0.0.1:8000. Serve `dist` at the root of a domain or local server
 - `docs/export-verification.md`: scope, checks, and known limitations
 - `docs/pr1-triage.md`: review findings, fixes, and browser verification
 
-Edit profile facts in `agents.json` and templates in `generate.py`, then regenerate and check. Edit styles in `dist/assets/site.css`; that file and the photograph are source assets and must remain tracked. The generator expects the checked-in output directories to exist. It removes obsolete generated `*.html` profile pages from `dist/realtors` after successful rendering and writes; keep that directory for generated profiles. It refuses symlinked profile directories and output files. Profile slugs must be unique lowercase letters/digits separated by single hyphens; official, HAR, and source links must be absolute HTTP or HTTPS URLs.
+Edit profile facts in `agents.json` and templates in `generate.py`, then regenerate and check. Edit styles in `dist/assets/site.css`; that file and the photograph are source assets and must remain tracked. The generator expects the checked-in output directories to exist. It removes obsolete generated `*.html` profile pages from `dist/realtors` after successful rendering and writes; keep that directory for generated profiles. It requires exactly seven profiles before writing and refuses symlinked dist/profile directories and output files. Profile slugs must be unique lowercase letters/digits separated by single hyphens; official, HAR, and source links must be absolute HTTP or HTTPS URLs.
 
 ## Content and publication status
 

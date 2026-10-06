@@ -2,6 +2,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 import json, html, re
 P=Path(__file__).parent; D=P/'dist'; agents=json.loads((P/'agents.json').read_text())
+if D.is_symlink():raise ValueError('dist must not be a symlink')
+if not (D/'realtors').is_dir():raise ValueError('Profile directory dist/realtors must exist')
+if len(agents)!=7:raise ValueError(f'Expected 7 profiles, found {len(agents)}')
 try:(D/'realtors').resolve().relative_to(D.resolve())
 except ValueError:
  raise ValueError('Profile directory outside dist') from None

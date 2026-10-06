@@ -29,7 +29,7 @@ python3 check_site.py
 python3 -m py_compile generate.py check_site.py tests/test_site.py
 ```
 
-- All 27 tests pass. Regression tests failed against the preceding implementation before their fixes; the follow-up covers the latest-head findings below.
+- All 31 tests pass. Regression tests failed against the preceding implementation before their fixes; the follow-up covers the latest-head findings below.
 - Generation and checking pass: nine pages, seven profiles, 184 local references, zero failures.
 - Repeated generation matches the checked-in HTML. Python compilation and `git diff --check` pass.
 - Compared with `676ffc28`, `agents.json`, CSS, photograph, all seven profile pages, and `404.html` are byte-identical. The homepage differs only by one closing `div`. The source snapshot, citations, design assets, example wording, and noindex status are preserved.
@@ -45,7 +45,7 @@ There were no page errors or failed local resource requests. Google Fonts reques
 
 Semgrep, Gitar, and Amazon Q check runs completed successfully. CodeAnt's separate Quality Gates and SCR commit statuses failed. Its quality-gate report listed one antipattern, with the other listed categories passing. A later [user-supplied dashboard extract](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/1#issuecomment-6022168176) identifies it as an unnecessary f-string prefix in the FAQ generator; the follow-up removes that prefix without changing output. CodeRabbit reported success but skipped reviewing the draft. These starting-commit results do not establish the status of the fix commit; inspect the PR's current checks after publication.
 
-The repository has no AGENTS.md, no active rulesets returned by GitHub, and the target branch was unprotected when checked. PR #1 remains a draft. No merge, deployment, Site publication, or template-repository change is included.
+The repository has no AGENTS.md, no active rulesets returned by GitHub, and the target branch was unprotected when checked. PR #1 was marked ready outside this triage session. No merge, deployment, Site publication, or template-repository change is included.
 
 ## Follow-up on `110ba894`
 
@@ -63,6 +63,24 @@ The incremental CodeAnt review assessed `110ba894b1c5b15c43c638fe98a07d9b1163705
 | Symlink fixtures fail where creation is unsupported/unprivileged | The suite skips symlink-dependent cases only for unsupported or permission errors from symlink creation; other filesystem errors still raise. Linux validation ran all cases without skips. Windows execution was not available. |
 | Original quality-gate unnecessary f-string prefix | Removed the unused prefix from the literal `<details`; repeated generation remains unchanged. |
 
-The [latest quality-gate comment](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/1#issuecomment-6020837151) reports two antipatterns and failed Quality Gates/SCR for `110ba894`, while SAST, SCA, and coverage passed. The comment does not name the two antipatterns, and the dashboard could not be read through the available tool. Removing the identified original issue does not prove the full gate cleared. Check the next commit's actual report.
+The [quality-gate comment for e193560c](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/1#issuecomment-6020837151) reports one unnamed antipattern and failed Quality Gates/SCR. SAST and SCA passed. A coverage status passed, but no coverage measurement was provided; this does not establish measured coverage. The dashboard could not be read from this container. The supplied Library extract explicitly identifies the original `676ffc28` unused f-string, already fixed in `e193560c`; it does not identify the current remaining antipattern. Both supported byte-download attempts failed, while Library read exposed all 178 lines. No new rule was inferred from that historical extract.
 
 Follow-up validation: 27 tests pass; normal and optimized Python checks both report nine pages, seven profiles, 184 references, and no failures. Generation, compilation, and whitespace checks pass. Every `dist` file and `agents.json` remains byte-identical to `110ba894`, so this follow-up changes no page content or visual design. The prior 27-view browser evidence still applies to these unchanged HTML/CSS/photo bytes.
+
+
+## Remaining review triage on `e193560c`
+
+All 17 unresolved inline threads and the discussion/consolidated comments were read. No reviewer messages or thread resolutions were sent. Duplicate suggestions are grouped below; prior CodeAnt markup, citation, cleanup, escaping, slug, optimized-Python and decorative-alt findings remain fixed.
+
+| Thread comment IDs | Disposition |
+| --- | --- |
+| 4197891364, 4197891395, 4197891455 | Already fixed: featured-profile error, confined local paths, and exact integer citation bounds. Regression coverage remains passing. |
+| 4197891416, 4197891426, 4197891439, 4197891486 | No broad catches: parsing/input/decoding failures remain visible and nonzero. Explicit markup errors are checked. Catching every exception or continuing with empty input would hide failures. |
+| 4197891467, 4199687623, 4199715785 | Added profile-directory preflight before any write. Existing symlink guards remain. Unexpected disk/permission failures still terminate nonzero; this export does not promise a multi-file transaction. |
+| 4199687594, 4199715807 | Missing-alt errors now name the containing page through parser errors; filename regression updated. |
+| 4199687612, 4199715813 | Corrected the stale quality-gate record above and distinguished successful status from measured coverage. |
+| 4199715751 | Enforced the fixed seven-profile content contract before writes; rejected removal preserves existing export. Replacing/renaming a profile still removes obsolete generated HTML while retaining assets. |
+| 4199715768 | Reproduced external writes through symlinked `dist`; now rejected before rendering/writes/cleanup. Regression confirms outside bytes survive. |
+| 4199715775 | Checked URL-bearing attributes including iframe src, area href and video poster using the existing scheme and local-path checks. Independent cases reproduce unsafe URLs and pass after the fix. This checker remains a focused template validator, not a browser security sanitizer. |
+
+Current validation: 31 tests pass after seven reproduced failing assertions/subcases; normal and optimized checks report nine pages, seven profiles, 184 local references and zero failures. All generated files, source data and design assets are byte-identical to `e193560c`. Existing browser evidence applies to these unchanged pages. Inspect the new commit's checks separately after publication.

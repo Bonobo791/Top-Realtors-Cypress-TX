@@ -12,15 +12,14 @@ class Page(HTMLParser):
   a=dict(a)
   if t=='h1': self.h1+=1
   if 'id' in a: self.ids.append(a['id'])
-  if t in ['a','link','img']:
-   k='src' if t=='img' else 'href'
+  for k in ('href','src','poster','data','action','formaction','cite','background'):
    if k in a:
     self.links.append(a[k])
     scheme=urlsplit(a[k]).scheme
     icon=t=='link' and a.get('rel')=='icon' and a[k].startswith('data:image/svg+xml,')
     if scheme not in {'','http','https','tel','mailto'} and not icon:
      self.errors.append('Unsafe link scheme: '+scheme)
-  if t=='img' and 'alt' not in a:failures.append('Missing image alt text')
+  if t=='img' and 'alt' not in a:self.errors.append('Missing image alt text')
  def handle_startendtag(self,t,a):
   self.handle_starttag(t,a)
   if t not in VOID:self.handle_endtag(t)

@@ -116,7 +116,7 @@ class SiteTests(unittest.TestCase):
                 self.assertTrue(any('Invalid citation' in f for f in report['failures']))
 
     def test_missing_featured_profile_has_explicit_error(self):
-        self.agents = self.agents[1:]
+        self.agents[0]['slug'] = 'missing-featured'
         self.save_agents()
         result = self.run_script('generate.py')
         self.assertNotEqual(result.returncode, 0)
@@ -130,8 +130,8 @@ class SiteTests(unittest.TestCase):
         self.assertTrue((self.site / 'dist/realtors/renamed-kevan.html').exists())
         self.assertEqual(self.check()[0].returncode, 0)
 
-    def test_removal_removes_old_generated_profile_and_preserves_assets(self):
-        self.agents.pop(1)
+    def test_replacement_removes_old_generated_profile_and_preserves_assets(self):
+        self.agents[1]['slug'] = 'replacement-profile'
         self.save_agents()
         keep = self.site / 'dist/realtors/notes.txt'
         keep.write_text('not a generated HTML page')
@@ -265,7 +265,51 @@ class SiteTests(unittest.TestCase):
         self.edit_home('<img src="/assets/coles-crossing-morning.jpg">')
         result, report = self.check()
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn('Missing image alt text', report['failures'])
+        self.assertIn('index.html: Missing image alt text', report['failures'])
+
+    def test_generator_rejects_wrong_profile_count_before_writes(self):
+        before = (self.site / 'dist/index.html').read_bytes()
+        self.agents.pop(1)
+        self.save_agents()
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Expected 7 profiles', result.stderr)
+        self.assertEqual(before, (self.site / 'dist/index.html').read_bytes())
+
+    def test_generator_rejects_missing_profile_directory_before_writes(self):
+        home = self.site / 'dist/index.html'
+        home.write_text('sentinel unchanged')
+        shutil.rmtree(self.site / 'dist/realtors')
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Profile directory dist/realtors must exist', result.stderr)
+        self.assertEqual(home.read_text(), 'sentinel unchanged')
+
+    def test_generator_rejects_symlinked_dist(self):
+        outside = self.site / 'outside'
+        (self.site / 'dist').rename(outside)
+        self.make_symlink(self.site / 'dist', outside, directory=True)
+        before = {p: p.read_bytes() for p in outside.rglob('*') if p.is_file()}
+        self.agents[1]['slug'] = 'renamed'
+        self.save_agents()
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('dist must not be a symlink', result.stderr)
+        self.assertEqual(before, {p: p.read_bytes() for p in before})
+
+    def test_checker_checks_additional_url_attributes(self):
+        home = self.site / 'dist/index.html'
+        original = home.read_text()
+        for markup in ('<iframe src="javascript:alert(1)"></iframe>',
+                       '<area href="javascript:alert(1)">',
+                       '<video poster="javascript:alert(1)"></video>'):
+            with self.subTest(markup=markup):
+                home.write_text(original)
+                self.edit_home(markup)
+                result, report = self.check()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertTrue(any('Unsafe link scheme: javascript' in f
+                                    for f in report['failures']))
 
     def test_phone_attribute_is_escaped(self):
         payload = '+17134941818" onclick="alert(1)&<test>'
