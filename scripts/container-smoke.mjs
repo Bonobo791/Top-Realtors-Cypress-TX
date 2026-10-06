@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
 const base = process.argv[2] ?? 'http://127.0.0.1:8080';
 const agents = JSON.parse(fs.readFileSync('src/content/realtors.json', 'utf8'));
+const site = JSON.parse(fs.readFileSync('src/content/site.json', 'utf8'));
 const routes = [
   '/',
   '/terms.html',
@@ -31,7 +33,13 @@ for (const route of routes) {
   assert.equal(r.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(r.headers.get('cache-control'), 'no-cache');
   assert(html.includes('https://toprealtorscypresstx.com' + route));
-  assert(html.includes('noindex'));
+  const robots = load(html)('meta[name=robots]');
+  assert.equal(robots.length, 1, 'Exactly one robots meta tag: ' + route);
+  assert.equal(
+    robots.attr('content'),
+    site.indexing ? 'index, follow' : 'noindex, follow',
+    'Robots indexing directive: ' + route,
+  );
 }
 for (const route of [
   '/missing',
@@ -46,7 +54,12 @@ for (const route of [
 ]) {
   const r = await fetch(base + route);
   assert.equal(r.status, 404, route);
-  assert((await r.text()).includes('That page isn’t in the guide.'));
+  const html = await r.text();
+  assert(html.includes('That page isn’t in the guide.'));
+  assert.equal(
+    load(html)('meta[name=robots]').attr('content'),
+    'noindex, follow',
+  );
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
 }
 const marker = await (await fetch(base + '/build.json')).json();
@@ -62,5 +75,5 @@ for (const route of [
 ])
   assert.equal((await fetch(base + route)).status, 200, route);
 console.log(
-  'Container smoke passed: public routes, genuine404, headers, canonical/noindex, media and expected build marker',
+  'Container smoke passed: public routes, genuine404, headers, canonical/robots, media and expected build marker',
 );

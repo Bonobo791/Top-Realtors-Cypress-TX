@@ -60,6 +60,56 @@ test('symlink local reference cannot escape the build', () => {
     'outside build',
   );
 });
+test('srcset preserves commas inside URLs and checks every candidate', () => {
+  const { root, file } = fixture(
+    '<img srcset="/photo,wide.jpg 660w, other.jpg 1320w" alt=""/>',
+  );
+  writeFileSync(join(root, 'photo,wide.jpg'), 'image');
+  writeFileSync(join(root, 'other.jpg'), 'image');
+  expect(inspectMarkup(root, file)).toEqual({ references: 2, failures: [] });
+});
+test('srcset URL without a descriptor can precede the next candidate', () => {
+  const { root, file } = fixture(
+    '<img srcset="/photo.jpg, other.jpg 2x, missing.jpg 3x" alt=""/>',
+  );
+  writeFileSync(join(root, 'photo.jpg'), 'image');
+  writeFileSync(join(root, 'other.jpg'), 'image');
+  expect(inspectMarkup(root, file)).toEqual({
+    references: 3,
+    failures: ['index.html: Missing local reference missing.jpg'],
+  });
+});
+test('a symlinked workspace ancestor accepts real local references', () => {
+  const { root, dir } = fixture(
+    '<main id="main"><a href="#main">Main</a><a href="?x=1#main">Again</a><img src="/photo.jpg" alt=""/><a href="other.html">Other</a><a href="folder/">Folder</a></main>',
+  );
+  writeFileSync(join(root, 'photo.jpg'), 'image');
+  writeFileSync(join(root, 'other.html'), 'other');
+  mkdirSync(join(root, 'folder'));
+  writeFileSync(join(root, 'folder/index.html'), 'folder');
+  symlinkSync(dir, join(dir, 'alias'), 'dir');
+  const alias = join(dir, 'alias/dist');
+  expect(inspectMarkup(alias, join(alias, 'index.html'))).toEqual({
+    references: 5,
+    failures: [],
+  });
+});
+test('symlinked workspace ancestors still reject traversal and file/index escapes', () => {
+  const { root, dir } = fixture(
+    '<a href="/%2e%2e/outside.html">Traversal</a><a href="escape.html">File</a><a href="folder/">Index</a>',
+  );
+  writeFileSync(join(dir, 'outside.html'), 'outside');
+  symlinkSync(join(dir, 'outside.html'), join(root, 'escape.html'));
+  mkdirSync(join(root, 'folder'));
+  symlinkSync(join(dir, 'outside.html'), join(root, 'folder/index.html'));
+  symlinkSync(dir, join(dir, 'alias'), 'dir');
+  const alias = join(dir, 'alias/dist');
+  const result = inspectMarkup(alias, join(alias, 'index.html'));
+  expect(result.references).toBe(3);
+  expect(result.failures).toEqual(
+    Array(3).fill('index.html: Reference outside build'),
+  );
+});
 test('tag casing and active URL schemes cannot bypass policy', () => {
   const { root, file } = fixture(
     '<ScRiPt>alert(1)</ScRiPt><IFRAME src="about:blank"></IFRAME><a href="javascript:alert(1)">Click</a>',

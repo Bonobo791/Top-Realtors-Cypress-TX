@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { load } from 'cheerio';
+import { srcsetUrls } from './srcset-urls.mjs';
 function contained(root, target) {
   const relative = path.relative(root, target);
   return (
@@ -11,6 +12,7 @@ function contained(root, target) {
 }
 export function inspectMarkup(root, file) {
   const realRoot = fs.realpathSync(root);
+  const realFile = fs.realpathSync(file);
   const $ = load(fs.readFileSync(file, 'utf8'));
   const failures = [];
   let references = 0;
@@ -51,13 +53,10 @@ export function inspectMarkup(root, file) {
         values.push({ value: node.attr(key), attribute: key });
     if (node.attr('srcset'))
       values.push(
-        ...node
-          .attr('srcset')
-          .split(',')
-          .map((part) => ({
-            value: part.trim().split(/\s+/)[0],
-            attribute: 'srcset',
-          })),
+        ...srcsetUrls(node.attr('srcset')).map((value) => ({
+          value,
+          attribute: 'srcset',
+        })),
       );
     for (const { value, attribute } of values) {
       if (value.startsWith('//') || /^[a-z][a-z\d+.-]*:/i.test(value)) {
@@ -92,10 +91,10 @@ export function inspectMarkup(root, file) {
         continue;
       }
       let target;
-      if (!decoded) target = file;
+      if (!decoded) target = realFile;
       else if (decoded.startsWith('/'))
-        target = path.resolve(root, '.' + decoded);
-      else target = path.resolve(path.dirname(file), decoded);
+        target = path.resolve(realRoot, '.' + decoded);
+      else target = path.resolve(path.dirname(realFile), decoded);
       if (!contained(realRoot, target)) {
         fail('Reference outside build');
         continue;

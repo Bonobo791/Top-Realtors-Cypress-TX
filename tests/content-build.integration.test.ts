@@ -161,3 +161,23 @@ test('actual output checker rejects corrupt rating scores and platform labels on
     statuses.map((item) => ({ ...item, rejected: true })),
   );
 }, 30000);
+test('actual indexing-enabled build emits index metadata while404 remains noindex', () => {
+  const file = join(root, 'src/content/site.json');
+  const original = readFileSync(file, 'utf8');
+  writeFileSync(
+    file,
+    JSON.stringify({ ...JSON.parse(original), indexing: true }),
+  );
+  try {
+    const result = build();
+    expect(result.status, result.stdout + result.stderr).toBe(0);
+    for (const route of ['index.html', 'realtors/kevan-pewitt.html']) {
+      const $ = load(readFileSync(join(root, 'dist', route), 'utf8'));
+      expect($('meta[name=robots]').attr('content')).toBe('index, follow');
+    }
+    const $ = load(readFileSync(join(root, 'dist/404.html'), 'utf8'));
+    expect($('meta[name=robots]').attr('content')).toBe('noindex, follow');
+  } finally {
+    writeFileSync(file, original);
+  }
+}, 30000);

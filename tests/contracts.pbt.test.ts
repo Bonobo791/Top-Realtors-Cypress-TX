@@ -119,3 +119,18 @@ test('PBT reorder preserves all identities and sponsored placement', () =>
     ),
     propertyOptions(),
   ));
+test('PBT individual rating subjects cannot be attributed to another person', () =>
+  fc.assert(
+    fc.property(
+      fc.constantFrom('kevan-pewitt', 'jill-smith', 'tiffani-reynolds'),
+      fc.string({ maxLength: 80 }),
+      (key, name) => {
+        const changed = structuredClone(ratings);
+        changed[key].subject = 'Other person: ' + name;
+        expect(() =>
+          parseRatingSnapshot(changed, parseDirectory(agents)),
+        ).toThrow();
+      },
+    ),
+    propertyOptions(),
+  ));

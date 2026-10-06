@@ -118,6 +118,8 @@ export function parseRatingSnapshot(
       throw new Error('Rating check date cannot be in the future');
     if (isTeam(agent) && rating.subject === agent.name)
       throw new Error('Individual survey cannot become a team rating');
+    if (!isTeam(agent) && rating.subject !== agent.name)
+      throw new Error('Individual rating subject must match its profile');
   }
   return parsed;
 }

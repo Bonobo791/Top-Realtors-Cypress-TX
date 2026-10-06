@@ -119,6 +119,20 @@ test('non-sponsored profiles are alphabetical with only leading The ignored', ()
     'The Zebra',
   ]);
 });
+test.each(['kevan-pewitt', 'jill-smith', 'tiffani-reynolds'] as const)(
+  'individual rating subject must match %s even with the correct HAR URL',
+  (key) => {
+    const data = parseDirectory(agents);
+    const changed = structuredClone(ratings);
+    changed[key].subject = 'Another individual';
+    expect(() => parseRatingSnapshot(changed, data, '2026-10-06')).toThrow();
+    const expected = ratings[key];
+    changed[key].subject = '  ' + expected.subject + '  ';
+    expect(parseRatingSnapshot(changed, data, '2026-10-06')[key]).toEqual(
+      expected,
+    );
+  },
+);
 test('seven unchanged source profiles and visible placement order', () => {
   const parsed = parseDirectory(agents);
   expect(parsed).toHaveLength(7);
