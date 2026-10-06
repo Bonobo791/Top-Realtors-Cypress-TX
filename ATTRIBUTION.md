@@ -8,7 +8,8 @@ This code export preserves the Cypress Realtor Guide example at https://cypress-
 - Work: “May Morning” by Michael Martin (pinemikey), May 2014
 - Source: https://commons.wikimedia.org/wiki/File:May_Morning_-_Flickr_-_pinemikey.jpg
 - License: Creative Commons Attribution-ShareAlike 2.0, https://creativecommons.org/licenses/by-sa/2.0/
-- Treatment: copied unchanged from the current Site's source; cropped for display by the existing layout
+- Original: copied unchanged from the current Site's source; retained as the source asset.
+- Responsive derivatives: `coles-crossing-morning-660.jpg`, `coles-crossing-morning-1320.jpg`, and `coles-crossing-morning-2640.jpg` in `dist/assets`, resized and JPEG-compressed from that original without changing the scene. These copies retain the same CC BY-SA 2.0 attribution and license; the existing layout crops them for display.
 
 Preserve the photograph's attribution and follow its license, including applicable share-alike requirements for adaptations. That image license is not asserted as a license for the entire codebase.
 

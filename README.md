@@ -38,3 +38,6 @@ Sources were reviewed on October 3, 2026. This is a fixed research snapshot with
 The originating Site was public when this export was verified on October 6, 2026. This repository export does not change that Site, its access, or its deployment. No new website deployment is included. Choose and configure a static host separately; configure its error handling to serve `404.html` for missing pages if desired.
 
 The site has no inquiry forms, analytics scripts, or lead collection. Google Fonts and outbound websites remain third-party network destinations with their own privacy practices. See `ATTRIBUTION.md` before reuse or republication.
+
+
+The original hero photograph remains in `dist/assets`. The homepage serves proportional 660/1320/2640px JPEG copies through `srcset`; their attribution and CC BY-SA 2.0 license are documented in `ATTRIBUTION.md`. To rebuild those assets with ImageMagick, use `magick dist/assets/coles-crossing-morning.jpg -resize WIDTHx -strip -sampling-factor 4:2:0 -quality QUALITY dist/assets/coles-crossing-morning-WIDTH.jpg`, with width/quality pairs 660/82, 1320/82 and 2640/80. Page generation uses the checked-in copies and needs no image-processing dependency.

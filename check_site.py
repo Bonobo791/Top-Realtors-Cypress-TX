@@ -2,7 +2,11 @@ from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import unquote, urlsplit
 import json, re
-root=(Path(__file__).parent/'dist').resolve(); failures=[];count=0
+P=Path(__file__).parent; dist=P/'dist'
+if dist.is_symlink():raise SystemExit('dist must not be a symlink')
+root=dist.resolve(); failures=[];count=0
+for name in ('index.html','404.html'):
+ if not (root/name).is_file():failures.append('Missing generated page '+name)
 VOID={'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}
 class Page(HTMLParser):
  def __init__(self): super().__init__(); self.links=[]; self.ids=[]; self.h1=0; self.stack=[]; self.errors=[]
@@ -19,6 +23,13 @@ class Page(HTMLParser):
     icon=t=='link' and a.get('rel')=='icon' and a[k].startswith('data:image/svg+xml,')
     if scheme not in {'','http','https','tel','mailto'} and not icon:
      self.errors.append('Unsafe link scheme: '+scheme)
+  if t in {'img','source'} and 'srcset' in a:
+   for candidate in a['srcset'].split(','):
+    fields=candidate.split()
+    if fields:
+     self.links.append(fields[0])
+     scheme=urlsplit(fields[0]).scheme
+     if scheme not in {'','http','https'}:self.errors.append('Unsafe link scheme: '+scheme)
   if t=='img' and 'alt' not in a:self.errors.append('Missing image alt text')
  def handle_startendtag(self,t,a):
   self.handle_starttag(t,a)
@@ -56,7 +67,7 @@ for f,p in parsed.items():
 alltext=' '.join(x.read_text() for x in parsed)
 for banned in ['555-0147','1,463','750+','Compass','#1 Pick','Certified Relocation Specialist']:
  if banned in alltext:failures.append('Unwanted content: '+banned)
-agents=json.loads((root.parent/'agents.json').read_text())
+agents=json.loads((P/'agents.json').read_text())
 if len(agents)!=7:failures.append(f'Expected 7 profiles, found {len(agents)}')
 valid_agents=[];slugs=set()
 for a in agents:

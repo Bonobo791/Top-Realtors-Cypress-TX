@@ -81,7 +81,7 @@ class SiteTests(unittest.TestCase):
         result, report = self.check()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(report, {'pages': 9, 'agent_profiles': 7,
-                                 'local_references_checked': 184, 'failures': []})
+                                 'local_references_checked': 187, 'failures': []})
 
     def test_featured_summary_and_button_are_outside_identity(self):
         self.assertEqual(self.run_script('generate.py').returncode, 0)
@@ -310,6 +310,48 @@ class SiteTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertTrue(any('Unsafe link scheme: javascript' in f
                                     for f in report['failures']))
+
+    def test_checker_rejects_symlinked_dist(self):
+        outside = self.site / 'outside'
+        (self.site / 'dist').rename(outside)
+        self.make_symlink(self.site / 'dist', outside, directory=True)
+        result = self.run_script('check_site.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('dist must not be a symlink', result.stderr)
+
+    def test_checker_requires_top_level_pages(self):
+        for name in ('404.html', 'index.html'):
+            with self.subTest(name=name):
+                page = self.site / 'dist' / name
+                content = page.read_bytes()
+                page.unlink()
+                result, report = self.check()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('Missing generated page ' + name, report['failures'])
+                page.write_bytes(content)
+
+    def test_hero_uses_responsive_derivatives(self):
+        self.assertEqual(self.run_script('generate.py').returncode, 0)
+        markup = Elements()
+        markup.feed((self.site / 'dist/index.html').read_text())
+        hero = next(attrs for (tag, attrs), parents in markup.elements
+                    if tag == 'img' and any(p[1].get('class') == 'hero-photo'
+                                           for p in parents))
+        self.assertEqual(hero['src'], '/assets/coles-crossing-morning-1320.jpg')
+        self.assertIn('660w', hero['srcset'])
+        self.assertIn('2640w', hero['srcset'])
+        self.assertIn('1320px', hero['sizes'])
+        for width in (660, 1320, 2640):
+            asset = self.site / 'dist/assets' / f'coles-crossing-morning-{width}.jpg'
+            self.assertTrue(asset.is_file())
+            self.assertLess(asset.stat().st_size, 800_000)
+
+    def test_checker_checks_responsive_image_candidates(self):
+        (self.site / 'dist/assets/coles-crossing-morning-660.jpg').unlink()
+        result, report = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(any('missing /assets/coles-crossing-morning-660.jpg' in f
+                            for f in report['failures']))
 
     def test_phone_attribute_is_escaped(self):
         payload = '+17134941818" onclick="alert(1)&<test>'

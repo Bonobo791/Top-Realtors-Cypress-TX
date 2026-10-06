@@ -84,3 +84,16 @@ All 17 unresolved inline threads and the discussion/consolidated comments were r
 | 4199715775 | Checked URL-bearing attributes including iframe src, area href and video poster using the existing scheme and local-path checks. Independent cases reproduce unsafe URLs and pass after the fix. This checker remains a focused template validator, not a browser security sanitizer. |
 
 Current validation: 31 tests pass after seven reproduced failing assertions/subcases; normal and optimized checks report nine pages, seven profiles, 184 local references and zero failures. All generated files, source data and design assets are byte-identical to `e193560c`. Existing browser evidence applies to these unchanged pages. Inspect the new commit's checks separately after publication.
+
+
+## Latest Codex review on `85bf5c44`
+
+| Discussion | Disposition |
+| --- | --- |
+| 4199838671 | Reproduced successful checking through symlinked `dist`. Checker now rejects the link before resolving the root and reads repository-local `agents.json`. |
+| 4199838688 | Reproduced absent 404 passing validation. Both top-level generated pages are now explicitly required as files. |
+| 4199838682 | Original hero photograph is 4,438,411 bytes. Added proportional 660/1320/2640px JPEG derivatives (62,419 / 234,461 / 775,361 bytes) and responsive markup matching the existing CSS widths. Original photo bytes, crop, scene, attribution and CC BY-SA 2.0 license remain intact; attribution documents derivatives. |
+
+Regression coverage failed first for all three findings, then passed. Current suite has 35 tests; normal and optimized checks validate nine pages, seven profiles, and 187 local references (the original 184 plus three responsive candidates). Checker verifies each candidate exists and rejects unsafe candidate schemes. Missing candidate coverage passes. Repeated generation, compilation and whitespace checks pass. Source facts, citations, seven profile pages, 404, original image and CSS are unchanged. No public comments, review replies or thread resolutions were posted.
+
+Independent Chromium comparison covered 375px at DPR 1/2, 800px, 1150px, and 1440px at DPR 1/2. Hero bounding boxes match the preceding commit exactly, responsive images decode without page errors, and the photograph scene/composition is preserved. Candidate selection chooses 660/1320/2640 as appropriate. Independent review found no blockers.
