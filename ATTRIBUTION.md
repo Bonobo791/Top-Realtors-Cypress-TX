@@ -1,22 +1,21 @@
 # Attribution and provenance
 
-This code export preserves the Cypress Realtor Guide example at https://cypress-realtor-guide-example.bonobo791.chatgpt.site, verified on October 6, 2026. The design was originally adapted from the user's supplied Kimi-generated HTML. The current source and published version both identify commit `1b52a92171e5989dd4ec67625239d042445824c2`.
+The website preserves the source facts and visual direction from the user's Cypress Realtor Guide export. The original design was adapted from supplied Kimi-generated HTML. The Astro replacement starts from target main `deb667c483a953df80afdc2ba7e18921d350f2c9`, which includes the PR1 triage fixes.
 
 ## Photograph
 
-- File: `dist/assets/coles-crossing-morning.jpg`
-- Work: “May Morning” by Michael Martin (pinemikey), May 2014
+- Original: public/assets/coles-crossing-morning.jpg, copied byte for byte from the export.
+- Work: “May Morning” by Michael Martin (pinemikey), May2014.
 - Source: https://commons.wikimedia.org/wiki/File:May_Morning_-_Flickr_-_pinemikey.jpg
-- License: Creative Commons Attribution-ShareAlike 2.0, https://creativecommons.org/licenses/by-sa/2.0/
-- Original: copied unchanged from the current Site's source; retained as the source asset.
-- Responsive derivatives: `coles-crossing-morning-660.jpg`, `coles-crossing-morning-1320.jpg`, and `coles-crossing-morning-2640.jpg` in `dist/assets`, resized and JPEG-compressed from that original without changing the scene. These copies retain the same CC BY-SA 2.0 attribution and license; the existing layout crops them for display.
+- License: CC BY-SA2.0, https://creativecommons.org/licenses/by-sa/2.0/
+- Responsive660/1320/2640px JPEG derivatives in the same folder are preserved byte for byte. They retain attribution/license; the layout crops them for display.
 
-Preserve the photograph's attribution and follow its license, including applicable share-alike requirements for adaptations. That image license is not asserted as a license for the entire codebase.
+Preserve attribution and applicable share-alike requirements for adaptations. This image license is not a license for the entire codebase.
 
-## Content, fonts, and other rights
+## Foundation and content
 
-Professional facts and public business contacts are attributed in `agents.json` and on each profile page to HAR and the linked professional websites. These are not independently audited claims. Company and professional names belong to their respective owners; no endorsement is asserted.
+Site-Bootstrap-ADM `916df29d7410b4a9a5048ed69819b5da448a2ecf` supplies original setup guidance/templates and the reused property-options helper. Its MIT notice is retained in docs/vendor/Site-Bootstrap-ADM-LICENSE.txt. The referenced Lippincott example's project code, identity and providers were not copied into the foundation.
 
-The CSS loads fonts from Google Fonts. No font binaries are bundled. Review the relevant font licenses if self-hosting them.
+Professional facts/public business contacts remain in src/content/realtors.json and linked source citations. Four individually scoped HAR survey snapshots retain their separate check dates. Sources are public profiles/self-published websites, not independently audited performance records. Company/professional names belong to their owners; paid placement is visibly labeled.
 
-No overall open-source license was supplied for the original design or this code export. No additional license grant is invented here. Repository visibility alone does not establish permission to reuse all third-party material.
+System fonts make no font-service requests and bundle no font binaries. Dependencies retain their package licenses. No overall code/design license was supplied for the inherited design/export, and no new overall grant is invented.

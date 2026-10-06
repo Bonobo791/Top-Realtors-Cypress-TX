@@ -1,0 +1,46 @@
+{
+  "name": "top-realtors-cypress-tx",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.19.0 <25",
+    "npm": ">=11.9.0 <12"
+  },
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "dev": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro dev --host 127.0.0.1",
+    "check": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro check && tsc --noEmit -p tsconfig.tests.json",
+    "lint": "eslint .",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:mutation": "stryker run --ignoreStatic",
+    "build": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/write-build-marker.mjs && node scripts/check-built.mjs",
+    "preview": "cross-env ASTRO_TELEMETRY_DISABLED=1 astro preview --host 127.0.0.1",
+    "verify": "npm run check && npm run lint && npm run format:check && npm test && npm run build"
+  },
+  "dependencies": {
+    "astro": "7.3.6",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3",
+    "eslint": "10.12.0",
+    "eslint-plugin-astro": "3.2.1",
+    "typescript-eslint": "8.71.1",
+    "prettier": "3.9.9",
+    "prettier-plugin-astro": "1.1.0",
+    "fast-check": "4.10.2",
+    "@playwright/test": "1.63.0",
+    "axe-core": "4.14.0",
+    "cheerio": "1.2.0",
+    "@stryker-mutator/core": "10.0.0",
+    "@stryker-mutator/vitest-runner": "10.0.0",
+    "@types/node": "24.19.1",
+    "cross-env": "10.1.0"
+  }
+}

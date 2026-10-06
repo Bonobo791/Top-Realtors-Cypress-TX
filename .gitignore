@@ -1,6 +1,11 @@
-__pycache__/
-*.py[cod]
-.venv/
+node_modules/
+dist/
+.astro/
+coverage/
+reports/
+.stryker-tmp/
+test-results/
+playwright-report/
 .env
 .env.*
 !.env.example

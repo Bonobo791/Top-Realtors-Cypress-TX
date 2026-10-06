@@ -1,43 +1,33 @@
-# Top-Realtors-Cypress-TX
+# Top Realtors Cypress TX
 
-Standalone export of the existing Cypress Realtor Guide example, originally adapted from the supplied Kimi design. This export preserves the current hosted site's design, content, seven professional profiles, local photograph, CSS, and static page generator.
+An Astro/TypeScript website for TopRealtorsCypressTX.com, built from the Site-Bootstrap-ADM foundation at `916df29d7410b4a9a5048ed69819b5da448a2ecf`. It has a directory homepage, seven source-linked profiles, Terms, Privacy and a custom 404 page. Lippincott appears first with a visible Sponsored listing badge; other profiles are alphabetical. Named HAR survey snapshots retain platform, count, subject, check date and individual scope.
 
-## Run locally
+This branch replaces the earlier Python export pipeline. Astro content collections validate Git-backed JSON and native Astro layouts/components render the site. No CMS service, forms, accounts, lead backend, tracking or third-party font requests are selected. The approved responsive design and licensed photo copies are preserved.
 
-Requires Python 3.9 or newer. There are no third-party Python packages, Node dependencies, API keys, sign-in services, or runtime backend.
+## Work locally
+
+Use Node 24.19.0 and npm 11.9.0 (`.node-version`, `packageManager` and the lockfile).
 
 ```sh
-python3 generate.py
-python3 check_site.py
-python3 -m unittest discover -s tests -v
-python3 -m http.server 8000 --directory dist --bind 127.0.0.1
+npm ci
+npm run dev
+npm run verify
+npm run test:e2e
+npm run test:mutation
 ```
 
-Open http://127.0.0.1:8000. Serve `dist` at the root of a domain or local server; links start with `/`, so opening the HTML directly or hosting it under a repository-name subpath will not resolve every asset. The checked-in `dist` directory can also be hosted as ordinary static files without a build service.
+`dev` runs the actual Astro site; `build` produces static `dist` through Astro, writes a safe commit marker and checks every local reference/metadata/source contract. `check` runs Astro's checker and strict TypeScript for tests; lint/format/test scripts run their real tools. Properties are part of ordinary `npm test`. Astro CLI telemetry is disabled by the scripts. Build output is regenerated and ignored, not hand-maintained HTML.
 
-## Files
+Playwright needs its Chromium installed (`npx playwright install chromium`). On this cloud container, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium`. Browser tests default to built Astro preview; `E2E_BASE_URL` selects an already-running local container. Actual Nginx-container acceptance is separate from framework preview. A source archive without Git requires `BUILD_COMMIT=local npm run build`; an approved release must supply its full SHA.
 
-- `agents.json`: seven profiles, public business contacts, and their source citations
-- `generate.py`: deterministic homepage, profile, and 404 page generator
-- `check_site.py`: checks the profile set, citation indices, local link containment, anchors, explicit tag balance, page headings, image alt text, and selected excluded claims
-- `dist/index.html`: homepage
-- `dist/realtors/*.html`: seven profile pages
-- `dist/assets/site.css`: responsive styles; imports Google Fonts
-- `dist/assets/coles-crossing-morning.jpg`: attributed local photograph
-- `ATTRIBUTION.md`: provenance, image license, and rights notes
-- `tests/test_site.py`: dependency-free generator and checker regression tests
-- `docs/export-verification.md`: scope, checks, and known limitations
-- `docs/pr1-triage.md`: review findings, fixes, and browser verification
+Edit profile facts in `src/content/realtors.json`, rated-agent snapshots in `src/content/ratings.json`, shared identity/indexing in `src/content/site.json`, templates in `src/components`, `src/layouts` and `src/pages`, and styles in `src/styles/site.css`. Public photo assets and attribution stay together. No live source fetching occurs during build; the visible source and metric dates remain snapshots.
 
-Edit profile facts in `agents.json` and templates in `generate.py`, then regenerate and check. Edit styles in `dist/assets/site.css`; that file and the photograph are source assets and must remain tracked. The generator expects the checked-in output directories to exist. It removes obsolete generated `*.html` profile pages from `dist/realtors` after successful rendering and writes; keep that directory for generated profiles. It requires exactly seven profiles before writing and refuses symlinked dist/profile directories and output files. Profile slugs must be unique lowercase letters/digits separated by single hyphens; official, HAR, and source links must be absolute HTTP or HTTPS URLs.
+## Hosting handoff
 
-## Content and publication status
+The multi-stage Dockerfile builds with Node and serves only Astro output through non-root Nginx8080. `/healthz` tests that the built homepage is available; `/build.json` identifies the supplied source SHA. No Python or Node runtime is shipped in the final image.
 
-Sources were reviewed on October 3, 2026. This is a fixed research snapshot with source attribution, not a live licensing check, audit of reviews or sales, ranking, endorsement, or established paid sponsorship. Unsupported original performance claims have not been restored. All seven profiles and the example/noindex wording are preserved.
+Use the [Coolify runbook](docs/coolify.md), [verification evidence](docs/verification.md), [plan amendment](docs/project-plan.md), [bootstrap requirement map](docs/bootstrap-tasks.md), [routes](docs/routes.md), [environment registry](docs/environment.md) and [invariants](docs/testing-invariants.md). Site-Bootstrap-ADM includes guidance/templates and a runnable demo, not a finished Astro application; this target instantiates its actual shared-layout/content/SEO/test/container contracts. The copied property-options helper and adapted templates retain their [MIT notice](docs/vendor/Site-Bootstrap-ADM-LICENSE.txt).
 
-The originating Site was public when this export was verified on October 6, 2026. This repository export does not change that Site, its access, or its deployment. No new website deployment is included. Choose and configure a static host separately; configure its error handling to serve `404.html` for missing pages if desired.
+The canonical HTTPS origin is fixed to `https://toprealtorscypresstx.com`, profile URLs end in `.html`, and preview indexing is off. Enabling indexing requires an approved source change/rebuild. The new branch has not been pushed or deployed. Publication, real CI, Coolify/proxy settings, DNS/TLS/redirects, log practices and rollback are separate release gates.
 
-The site has no inquiry forms, analytics scripts, or lead collection. Google Fonts and outbound websites remain third-party network destinations with their own privacy practices. See `ATTRIBUTION.md` before reuse or republication.
-
-
-The original hero photograph remains in `dist/assets`. The homepage serves proportional 660/1320/2640px JPEG copies through `srcset`; their attribution and CC BY-SA 2.0 license are documented in `ATTRIBUTION.md`. To rebuild those assets with ImageMagick, use `magick dist/assets/coles-crossing-morning.jpg -resize WIDTHx -strip -sampling-factor 4:2:0 -quality QUALITY dist/assets/coles-crossing-morning-WIDTH.jpg`, with width/quality pairs 660/82, 1320/82 and 2640/80. Page generation uses the checked-in copies and needs no image-processing dependency.
+`docs/export-verification.md` and `docs/pr1-triage.md` are historical records of the superseded export. [ATTRIBUTION.md](ATTRIBUTION.md) preserves photo provenance; no new overall code/design license is asserted.
