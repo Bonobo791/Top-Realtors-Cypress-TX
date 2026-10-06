@@ -1,3 +1,4 @@
+import errno
 import json
 from html.parser import HTMLParser
 from pathlib import Path
@@ -43,9 +44,19 @@ class SiteTests(unittest.TestCase):
         shutil.copytree(REPO / 'dist', self.site / 'dist')
         self.agents = json.loads((self.site / 'agents.json').read_text())
 
-    def run_script(self, name):
-        return subprocess.run([sys.executable, str(self.site / name)],
+    def run_script(self, name, *options):
+        return subprocess.run([sys.executable, *options, str(self.site / name)],
                               capture_output=True, text=True)
+
+    def make_symlink(self, link, target, directory=False):
+        try:
+            link.symlink_to(target, target_is_directory=directory)
+        except NotImplementedError as error:
+            self.skipTest(f'Symlink creation unavailable: {error}')
+        except OSError as error:
+            if error.errno not in {errno.EPERM, errno.EACCES, errno.ENOSYS, errno.ENOTSUP}:
+                raise
+            self.skipTest(f'Symlink creation unavailable: {error}')
 
     def save_agents(self):
         (self.site / 'agents.json').write_text(json.dumps(self.agents))
@@ -143,12 +154,118 @@ class SiteTests(unittest.TestCase):
         unrelated = outside / 'unrelated.html'
         unrelated.write_text('unrelated file must survive')
         shutil.rmtree(self.site / 'dist/realtors')
-        (self.site / 'dist/realtors').symlink_to(outside, target_is_directory=True)
+        self.make_symlink(self.site / 'dist/realtors', outside, directory=True)
         result = self.run_script('generate.py')
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('Profile directory outside dist', result.stderr)
         self.assertEqual(unrelated.read_text(), 'unrelated file must survive')
         self.assertEqual(list(outside.iterdir()), [unrelated])
+
+    def test_generator_refuses_profile_directory_symlink_to_site_root(self):
+        before = {p: p.read_bytes() for p in (self.site / 'dist').glob('*.html')}
+        shutil.rmtree(self.site / 'dist/realtors')
+        self.make_symlink(self.site / 'dist/realtors', self.site / 'dist', directory=True)
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Profile directory must not be a symlink', result.stderr)
+        self.assertEqual(before, {p: p.read_bytes() for p in before})
+        self.assertEqual(set((self.site / 'dist').glob('*.html')), set(before))
+
+    def test_invalid_slugs_are_rejected_before_writes_or_cleanup(self):
+        before = {p: p.read_bytes() for p in (self.site / 'dist').rglob('*.html')}
+        for slug in ('../../outside', '../index', '/outside', r'..\outside', '', 'Kevan', None):
+            with self.subTest(slug=slug):
+                self.agents[1]['slug'] = slug
+                self.save_agents()
+                result = self.run_script('generate.py')
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('Invalid profile slug', result.stderr)
+                self.assertEqual(before, {p: p.read_bytes() for p in before})
+                self.assertFalse((self.site / 'outside.html').exists())
+                result, report = self.check()
+                self.assertNotEqual(result.returncode, 0)
+                self.assertTrue(any('Invalid profile slug' in f for f in report['failures']))
+
+    def test_duplicate_slugs_are_rejected_before_writes(self):
+        before = {p: p.read_bytes() for p in (self.site / 'dist').rglob('*.html')}
+        self.agents[1]['slug'] = self.agents[0]['slug']
+        self.save_agents()
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Duplicate profile slug', result.stderr)
+        self.assertEqual(before, {p: p.read_bytes() for p in before})
+        result, report = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(any('Duplicate profile slug' in f for f in report['failures']))
+
+    def test_generator_refuses_symlinked_profile_output(self):
+        outside = self.site / 'unrelated.html'
+        outside.write_text('unrelated file must survive')
+        output = self.site / 'dist/realtors/kevan-pewitt.html'
+        output.unlink()
+        self.make_symlink(output, outside)
+        result = self.run_script('generate.py')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Output is a symlink', result.stderr)
+        self.assertEqual(outside.read_text(), 'unrelated file must survive')
+
+    def test_external_urls_reject_active_or_non_web_schemes(self):
+        before = {p: p.read_bytes() for p in (self.site / 'dist').rglob('*.html')}
+        for value in ('javascript:alert(1)', 'JaVaScRiPt:alert(1)', 'java\nscript:alert(1)',
+                      'data:text/html,<script>alert(1)</script>', '//example.com', 'https:relative'):
+            for field in ('official', 'har', 'source'):
+                with self.subTest(value=value, field=field):
+                    self.agents = json.loads((REPO / 'agents.json').read_text())
+                    if field == 'source':
+                        self.agents[1]['sources'][0]['url'] = value
+                    else:
+                        self.agents[1][field] = value
+                    self.save_agents()
+                    result = self.run_script('generate.py')
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertIn('Invalid external URL', result.stderr)
+                    self.assertEqual(before, {p: p.read_bytes() for p in before})
+
+    def test_official_label_is_text_not_markup(self):
+        self.agents[1]['official_label'] = '<img src=x onerror="alert(1)">A & B'
+        self.save_agents()
+        self.assertEqual(self.run_script('generate.py').returncode, 0)
+        text = (self.site / 'dist/realtors/kevan-pewitt.html').read_text()
+        markup = Elements()
+        markup.feed(text)
+        self.assertFalse(any(node[0] == 'img' for node, _ in markup.elements))
+        self.assertIn('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;A &amp; B', text)
+
+    def test_checker_rejects_active_link_scheme(self):
+        self.edit_home('<a href="JaVaScRiPt:alert(1)">Bad link</a>')
+        result, report = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(any('Unsafe link scheme' in f for f in report['failures']))
+
+    def test_checker_failures_exit_nonzero_when_python_is_optimized(self):
+        self.edit_home('<form></form>')
+        result = self.run_script('check_site.py', '-O')
+        self.assertTrue(json.loads(result.stdout)['failures'])
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_checker_profile_count_exits_nonzero_when_optimized(self):
+        self.agents.pop(1)
+        self.save_agents()
+        result = self.run_script('check_site.py', '-O')
+        report = json.loads(result.stdout)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(any('Expected 7 profiles' in f for f in report['failures']))
+
+    def test_checker_accepts_explicit_decorative_alt(self):
+        self.edit_home('<img src="/assets/coles-crossing-morning.jpg" alt="">')
+        result, report = self.check()
+        self.assertEqual(result.returncode, 0, report)
+
+    def test_checker_rejects_missing_alt_attribute(self):
+        self.edit_home('<img src="/assets/coles-crossing-morning.jpg">')
+        result, report = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Missing image alt text', report['failures'])
 
     def test_phone_attribute_is_escaped(self):
         payload = '+17134941818" onclick="alert(1)&<test>'
@@ -184,7 +301,7 @@ class SiteTests(unittest.TestCase):
     def test_checker_rejects_symlink_escape(self):
         outside = self.site / 'private.txt'
         outside.write_text('outside the public site')
-        (self.site / 'dist/assets/escape.txt').symlink_to(outside)
+        self.make_symlink(self.site / 'dist/assets/escape.txt', outside)
         self.edit_home('<a href="/assets/escape.txt">Outside</a>')
         result, report = self.check()
         self.assertNotEqual(result.returncode, 0)
