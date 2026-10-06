@@ -55,7 +55,12 @@ for f,p in parsed.items():
   if u.scheme or u.netloc:continue
   count+=1
   path=unquote(u.path)
-  t=(root/path.lstrip('/') if path.startswith('/') else f.parent/path).resolve() if path else f
+  if not path:
+   t=f
+  elif path.startswith('/'):
+   t=(root/path.lstrip('/')).resolve()
+  else:
+   t=(f.parent/path).resolve()
   try:t.relative_to(root)
   except ValueError:
    failures.append(f'{f.name}: path outside dist {href}');continue

@@ -412,6 +412,20 @@ class SiteTests(unittest.TestCase):
         result, report = self.check()
         self.assertEqual(result.returncode, 0, report)
 
+    def test_checker_accepts_query_only_and_fragment_only_links(self):
+        self.edit_home('<a href="?view=guide">Same page</a>'
+                       '<a href="#directory">Directory</a>'
+                       '<a href="?view=guide#directory">Directory query</a>')
+        result, report = self.check()
+        self.assertEqual(result.returncode, 0, report)
+
+    def test_checker_resolves_absolute_relative_and_directory_links(self):
+        self.edit_home('<a href="/realtors/kevan-pewitt.html">Absolute</a>'
+                       '<a href="realtors/kevan-pewitt.html">Relative</a>'
+                       '<a href="/">Root directory</a>')
+        result, report = self.check()
+        self.assertEqual(result.returncode, 0, report)
+
     def test_invalid_json_fails_without_modifying_pages(self):
         (self.site / 'agents.json').write_text('{broken')
         before = {p: p.read_bytes() for p in (self.site / 'dist').rglob('*.html')}
