@@ -16,21 +16,22 @@ class Page(HTMLParser):
   a=dict(a)
   if t=='h1': self.h1+=1
   if 'id' in a: self.ids.append(a['id'])
+  self.check_links(t,a)
+  if t=='img' and 'alt' not in a:self.errors.append('Missing image alt text')
+ def add_link(self,href,icon=False,schemes=('', 'http', 'https', 'tel', 'mailto')):
+  self.links.append(href)
+  scheme=urlsplit(href).scheme
+  if scheme not in schemes and not icon:
+   self.errors.append('Unsafe link scheme: '+scheme)
+ def check_links(self,t,a):
   for k in ('href','src','poster','data','action','formaction','cite','background'):
    if k in a:
-    self.links.append(a[k])
-    scheme=urlsplit(a[k]).scheme
     icon=t=='link' and a.get('rel')=='icon' and a[k].startswith('data:image/svg+xml,')
-    if scheme not in {'','http','https','tel','mailto'} and not icon:
-     self.errors.append('Unsafe link scheme: '+scheme)
+    self.add_link(a[k],icon)
   if t in {'img','source'} and 'srcset' in a:
    for candidate in a['srcset'].split(','):
     fields=candidate.split()
-    if fields:
-     self.links.append(fields[0])
-     scheme=urlsplit(fields[0]).scheme
-     if scheme not in {'','http','https'}:self.errors.append('Unsafe link scheme: '+scheme)
-  if t=='img' and 'alt' not in a:self.errors.append('Missing image alt text')
+    if fields:self.add_link(fields[0],schemes=('', 'http', 'https'))
  def handle_startendtag(self,t,a):
   self.handle_starttag(t,a)
   if t not in VOID:self.handle_endtag(t)

@@ -353,6 +353,14 @@ class SiteTests(unittest.TestCase):
         self.assertTrue(any('missing /assets/coles-crossing-morning-660.jpg' in f
                             for f in report['failures']))
 
+    def test_checker_rejects_non_image_srcset_schemes(self):
+        self.edit_home('<img src="/assets/coles-crossing-morning-660.jpg" '
+                       'srcset="mailto:test@example.com 1x" alt="">')
+        result, report = self.check()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue(any('Unsafe link scheme: mailto' in f
+                            for f in report['failures']))
+
     def test_phone_attribute_is_escaped(self):
         payload = '+17134941818" onclick="alert(1)&<test>'
         self.agents[0]['tel'] = payload
