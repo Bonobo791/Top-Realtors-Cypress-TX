@@ -10,7 +10,7 @@ if (!/^[a-f0-9]{40}$/.test(commit) && commit !== 'local')
 fs.writeFileSync(
   'dist/build.json',
   JSON.stringify(
-    { commit, origin: 'https://toprealtorscypresstx.com', framework: 'Astro' },
+    { commit, origin: 'https://realtorscypresstx.com', framework: 'Astro' },
     null,
     2,
   ) + '\n',

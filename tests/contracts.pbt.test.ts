@@ -83,7 +83,7 @@ test('PBT exact host and independently specified route grammar', () =>
           path,
         );
       if (allowed)
-        expect(canonical(path)).toBe('https://toprealtorscypresstx.com' + path);
+        expect(canonical(path)).toBe('https://realtorscypresstx.com' + path);
       else expect(() => canonical(path)).toThrow();
     }),
     propertyOptions(),
@@ -94,7 +94,7 @@ test('PBT valid profile paths retain exact route and canonical', () =>
       fc.stringMatching(/^[a-z][a-z0-9]{0,24}(?:-[a-z0-9]{1,12})?$/),
       (slug) => {
         expect(canonical('/realtors/' + slug + '.html')).toBe(
-          'https://toprealtorscypresstx.com/realtors/' + slug + '.html',
+          'https://realtorscypresstx.com/realtors/' + slug + '.html',
         );
       },
     ),

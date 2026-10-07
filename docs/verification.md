@@ -1,5 +1,9 @@
 # Astro verification
 
+## Public launch configuration — October 7, 2026
+
+For the authorized realtorscypresstx.com launch with indexing enabled, npm ci installed the frozen 561-package dependency set; FC_SEED=20261007 npm run verify passed 144 tests in eight files, zero Astro/TypeScript diagnostics, lint and formatting, and the 11-page/seven-profile build with 233 checked local references. Scoped mutation checks executed 181 non-static mutants: 151 killed and 30 survived, score 83.43%, with zero timeouts, uncovered mutants or errors. Chromium preview and actual non-root, read-only Nginx-container checks each passed 39 browser cases. The container HTTP smoke passed public routes, genuine404, headers, canonical/robots, media and its expected local build marker, and Docker reported healthy. The final release SHA and live deployment results are recorded in the release handoff.
+
 ## PR3 smoke and attribution follow-up
 
 The October 7, 2026 follow-up from `10729d9963eb5e83233f1af2e1a637c4997108c7` is recorded in [pr3-smoke-review.md](pr3-smoke-review.md): 144 tests passed, with zero Astro/TypeScript diagnostics; the build checked 11 pages, seven profiles and 233 local references. The rebuilt local Nginx image passed HTTP smoke and 39 browser checks, and all 20 generated files matched the earlier reviewed output. The accompanying deliverable manifest records final mutation accounting, committed-image identity and published-head checks.

@@ -257,7 +257,7 @@ test('actual checker rejects duplicate sitemap entries and symlinked required pa
         .replace(/href="#[^"]*"/g, 'href="/"')
         .replaceAll(
           'href="/realtors/',
-          'href="https://toprealtorscypresstx.com/realtors/',
+          'href="https://realtorscypresstx.com/realtors/',
         ),
     );
   const homeFile = join(root, 'dist/index.html');
@@ -266,7 +266,7 @@ test('actual checker rejects duplicate sitemap entries and symlinked required pa
     homeFile,
     home.replaceAll(
       'href="/realtors/',
-      'href="https://toprealtorscypresstx.com/realtors/',
+      'href="https://realtorscypresstx.com/realtors/',
     ),
   );
   rmSync(profileDir, { recursive: true });

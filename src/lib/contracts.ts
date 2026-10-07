@@ -1,5 +1,5 @@
 import { z } from 'zod';
-export const ORIGIN = 'https://toprealtorscypresstx.com';
+export const ORIGIN = 'https://realtorscypresstx.com';
 export const SPONSORED_SLUG = 'lippincott-team';
 export const FACTS_CHECKED = 'October 3, 2026';
 // HAR feedback on the sponsored organization belongs to its named individual.

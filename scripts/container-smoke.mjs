@@ -93,7 +93,7 @@ for (const route of [
 }
 const marker = await (await request('/build.json')).json();
 assert.equal(marker.framework, 'Astro');
-assert.equal(marker.origin, 'https://toprealtorscypresstx.com');
+assert.equal(marker.origin, 'https://realtorscypresstx.com');
 if (process.env.EXPECTED_COMMIT)
   assert.equal(marker.commit, process.env.EXPECTED_COMMIT);
 for (const route of [
