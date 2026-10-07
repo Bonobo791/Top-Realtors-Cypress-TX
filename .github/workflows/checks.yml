@@ -18,10 +18,7 @@ jobs:
           node-version-file: .node-version
           cache: npm
       - run: npm install --global npm@11.9.0 && npm ci
-      - run: |
-          npx prettier --write src/pages/index.astro src/pages/terms.astro
-          git diff -- src/pages/index.astro src/pages/terms.astro
-          npm run verify
+      - run: npm run verify
         env:
           BUILD_COMMIT: ${{ github.sha }}
       - run: npm run test:mutation
