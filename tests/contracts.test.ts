@@ -251,11 +251,38 @@ test('the sponsored individual remains Amy Lippincott after whitespace normaliza
       .subject,
   ).toBe('Amy Lippincott');
 });
+test.each(['Individual', 'Team leader', 'Real estate agent'])(
+  'the sponsored rated subject remains pinned when its type changes to %s',
+  (type) => {
+    const changed = parseDirectory(agents);
+    const sponsored = changed.find(
+      (agent) => agent.slug === 'lippincott-team',
+    )!;
+    sponsored.type = type;
+    const snapshots = structuredClone(ratings);
+    snapshots['lippincott-team'].subject = sponsored.name;
+    expect(() => parseRatingSnapshot(snapshots, changed)).toThrow();
+    snapshots['lippincott-team'].subject = 'Amy Lippincott';
+    expect(
+      parseRatingSnapshot(snapshots, changed)['lippincott-team'].subject,
+    ).toBe('Amy Lippincott');
+  },
+);
 test('an unknown team requires an explicit rated individual binding', () => {
   const changed = parseDirectory(agents);
   changed.find((agent) => agent.slug === 'kevan-pewitt')!.type =
     'Real estate team';
   const snapshots = structuredClone(ratings);
+  expect(() => parseRatingSnapshot(snapshots, changed)).toThrow();
   snapshots['kevan-pewitt'].subject = 'Amy Lippincott';
   expect(() => parseRatingSnapshot(snapshots, changed)).toThrow();
+});
+test('an individual with a constructor slug retains its own rated subject', () => {
+  const changed = parseDirectory(agents);
+  changed.find((agent) => agent.slug === 'kevan-pewitt')!.slug = 'constructor';
+  const { 'kevan-pewitt': rating, ...snapshots } = structuredClone(ratings);
+  expect(
+    parseRatingSnapshot({ ...snapshots, constructor: rating }, changed)
+      .constructor,
+  ).toEqual(rating);
 });

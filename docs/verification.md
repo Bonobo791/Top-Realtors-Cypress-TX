@@ -1,6 +1,10 @@
 # Astro verification
 
-## Current PR review
+## PR3 smoke and attribution follow-up
+
+The October 7, 2026 follow-up from `10729d9963eb5e83233f1af2e1a637c4997108c7` is recorded in [pr3-smoke-review.md](pr3-smoke-review.md): 144 tests passed, with zero Astro/TypeScript diagnostics; the build checked 11 pages, seven profiles and 233 local references. The rebuilt local Nginx image passed HTTP smoke and 39 browser checks, and all 20 generated files matched the earlier reviewed output. The accompanying deliverable manifest records final mutation accounting, committed-image identity and published-head checks.
+
+## Earlier PR2 follow-up review
 
 This is the primary verification record for PR #2. The latest completed evidence before this review is the follow-up recorded in [pr2-follow-up.md](pr2-follow-up.md), checked into starting revision `e8efae89ede4e5cb319f7d3ccf7a79b748461ad0`. Final results for the present review belong in this section and must identify the tested revision and commands. The historical counts below do not describe the current test suite.
 

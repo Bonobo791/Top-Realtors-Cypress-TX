@@ -24,6 +24,8 @@ docker stop --time 30 cypress-astro-smoke
 docker rm cypress-astro-smoke
 ```
 
+The container smoke command accepts only HTTP origins whose normalized host is `127.0.0.1` or `[::1]`, with an optional port, a root pathname and empty credentials/query/fragment. It rejects redirects. A trailing `/` is normalized before the fixed smoke routes are requested.
+
 Install Playwright Chromium, or use the documented local executable path. A cold install may need the execution environment's credential-free proxy, resolvable proxy host and CA trust. Pass Docker's predefined HTTP_PROXY/HTTPS_PROXY arguments and optional BuildKit build_ca secret only for that environment. Never disable TLS validation or use ARG/ENV for private secrets. Proxy args/trust mounts are tooling inputs, not application settings/runtime files. See [Docker proxy arguments](https://docs.docker.com/build/building/variables/#proxy-arguments).
 
 Nginx sends genuine404, CSP/nosniff/referrer/no-cache headers, and denies listing/symlinked resources. Source JSON/scripts, .env, stock50x and node_modules are absent from its webroot. Marker/health responses cannot prove fresh release through a stale external cache: verify the actual public chain. HSTS belongs to the reviewed TLS proxy.

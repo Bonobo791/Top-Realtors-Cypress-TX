@@ -134,7 +134,10 @@ export function parseRatingSnapshot(
       throw new Error('Rating must match a profile and its HAR source');
     if (rating.checked > asOf)
       throw new Error('Rating check date cannot be in the future');
-    const subject = isTeam(agent) ? teamRatingSubjects[agent.slug] : agent.name;
+    let subject: string | undefined;
+    if (Object.hasOwn(teamRatingSubjects, agent.slug))
+      subject = teamRatingSubjects[agent.slug];
+    else if (!isTeam(agent)) subject = agent.name;
     if (!subject || rating.subject !== subject)
       throw new Error('Rating subject must match its verified individual');
   }

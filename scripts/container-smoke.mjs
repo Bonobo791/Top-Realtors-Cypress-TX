@@ -2,9 +2,23 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
-const base = process.argv[2] ?? 'http://127.0.0.1:8080';
+const target = new URL(process.argv[2] ?? 'http://127.0.0.1:8080');
+assert(
+  target.protocol === 'http:' &&
+    ['127.0.0.1', '[::1]'].includes(target.hostname) &&
+    !target.username &&
+    !target.password &&
+    target.pathname === '/' &&
+    !target.search &&
+    !target.hash,
+  'Smoke target must be an HTTP loopback origin without credentials, path, query or fragment',
+);
+const base = target.origin;
 const request = (route, timeout = 5000) =>
-  fetch(base + route, { signal: AbortSignal.timeout(timeout) });
+  fetch(base + route, {
+    signal: AbortSignal.timeout(timeout),
+    redirect: 'error',
+  });
 const agents = JSON.parse(fs.readFileSync('src/content/realtors.json', 'utf8'));
 const site = JSON.parse(fs.readFileSync('src/content/site.json', 'utf8'));
 const routes = [
@@ -83,8 +97,11 @@ for (const route of [
   '/sitemap.xml',
   '/favicon.svg',
   '/assets/coles-crossing-morning-1320.jpg',
-])
-  assert.equal((await request(route)).status, 200, route);
+]) {
+  const response = await request(route);
+  assert.equal(response.status, 200, route);
+  await response.arrayBuffer();
+}
 console.log(
   'Container smoke passed: public routes, genuine404, headers, canonical/robots, media and expected build marker',
 );
