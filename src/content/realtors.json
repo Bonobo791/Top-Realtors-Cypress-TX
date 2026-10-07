@@ -9,8 +9,8 @@
     "tel": "+17134941818",
     "official": "https://thelippincottteam.com/",
     "har": "https://www.har.com/amy-lippincott/agent_alippi?contact=1",
-    "intro": "Led by Amy Lippincott, this eXp Realty team serves Northwest Houston. Its website includes Cypress, Tomball, and Katy among its markets and describes buying, selling, and relocation services.",
-    "short": "Led by Amy Lippincott. The team’s website describes services across Northwest Houston, including Cypress, Tomball, and Katy.",
+    "intro": "Led by Amy Lippincott, this team handles buyer, seller and relocation services across Northwest Houston, including Cypress, Tomball and Katy. HAR shows 4.92/5 across 688 completed surveys for Amy individually; recent comments praise responsiveness and transaction support but often identify other team members, so ask who would handle your day-to-day work.",
+    "short": "Buyer, seller and relocation team for Northwest Houston, including Cypress. HAR’s score is for Amy Lippincott individually; recent comments often praise other team members.",
     "facts": [
       {
         "text": "Amy Lippincott’s HAR biography identifies her as the owner and team lead of The Lippincott Team.",
@@ -23,18 +23,26 @@
       {
         "text": "The team website describes home buying, home selling and relocation services across Northwest Houston.",
         "source": 1
+      },
+      {
+        "text": "Recent HAR comments praise responsiveness, local knowledge and smooth transaction support. Several recent commenters identify other team members; clarify who will lead your file.",
+        "source": 0
+      },
+      {
+        "text": "The team website describes dedicated buyer and listing specialists and transaction coordinators; ask who would be your primary contact.",
+        "source": 1
       }
     ],
     "sources": [
       {
         "label": "Amy Lippincott on HAR",
         "url": "https://www.har.com/amy-lippincott/agent_alippi?contact=1",
-        "supports": "Team leadership and brokerage affiliation."
+        "supports": "Team leadership, brokerage affiliation, HAR survey rating and public client comments."
       },
       {
         "label": "The Lippincott Team website",
         "url": "https://thelippincottteam.com/",
-        "supports": "Service areas, services, and public team phone."
+        "supports": "Service areas, services and team structure."
       }
     ]
   },
@@ -48,16 +56,20 @@
     "tel": "+12815007077",
     "official": "https://houstonprimerealty.com/about/",
     "har": "https://www.har.com/kevan-pewitt/agent_PEWITTK",
-    "intro": "Kevan Pewitt is identified as the broker-owner of Houston Prime Realty. His brokerage biography describes a Greater Houston practice, including Cypress and Katy, and a background in residential appraisal.",
-    "short": "Houston Prime Realty’s broker-owner. His official biography covers Greater Houston, Cypress, and Katy, with a residential appraisal background.",
+    "intro": "Kevan Pewitt is the broker-owner of Houston Prime Realty. His Texas residential appraisal background and finance education are relevant to pricing and valuation. HAR shows 5/5 across 231 completed surveys, with the newest visible comment on October 1, 2026 praising detailed property guidance, location fit and negotiation; because his stated service area extends well beyond Cypress, ask about recent work in your target neighborhood.",
+    "short": "Residential appraisal and finance background, with a 5/5 HAR rating across 231 surveys. The newest visible comment is dated October 1, 2026.",
     "facts": [
       {
-        "text": "His official biography identifies him as the broker-owner of Houston Prime Realty.",
+        "text": "His official biography identifies him as the broker-owner of Houston Prime Realty and describes service across Greater Houston, including Cypress, Katy and Bryan–College Station.",
         "source": 1
       },
       {
-        "text": "The biography lists the Certified Residential Specialist designation and a Texas residential appraisal background.",
+        "text": "His biography lists the Certified Residential Specialist designation, a Texas residential appraisal background and a BBA in finance.",
         "source": 1
+      },
+      {
+        "text": "The newest visible HAR comment, dated October 1, 2026, praises detailed property notes, fit with the buyer’s location needs and negotiation.",
+        "source": 0
       },
       {
         "text": "HAR lists his brokerage as Houston Prime Realty and publishes his professional profile and transaction activity.",
@@ -68,12 +80,12 @@
       {
         "label": "Kevan Pewitt on HAR",
         "url": "https://www.har.com/kevan-pewitt/agent_PEWITTK",
-        "supports": "Professional identity and brokerage affiliation."
+        "supports": "Brokerage affiliation, survey rating, public client comments and transaction activity."
       },
       {
         "label": "Houston Prime Realty biography",
         "url": "https://houstonprimerealty.com/about/",
-        "supports": "Role, stated service areas, background, and direct business phone."
+        "supports": "Role, stated service areas, professional background and direct business phone."
       }
     ]
   },
@@ -87,8 +99,8 @@
     "tel": "+17138181330",
     "official": "https://www.remax-universal-texas.com/agents/Michele%2BHarmon",
     "har": "https://www.har.com/michele-harmon/agent_harmonm",
-    "intro": "Michele Harmon leads a RE/MAX Universal team. Her public profiles describe work in Cypress, Tomball, Magnolia, and other Northwest Houston communities, and HAR lists the Certified Negotiation Expert designation.",
-    "short": "A RE/MAX Universal team leader whose public profiles describe work in Cypress, Tomball, Magnolia, and nearby Northwest Houston communities.",
+    "intro": "Michele Harmon leads a RE/MAX Universal team serving Cypress, Tomball, Magnolia, Spring, The Woodlands and Northwest Houston. HAR lists her Certified Negotiation Expert credential, and recent activity appears in Cypress, Tomball and Spring; no verified Client Experience Rating or recent written HAR comment was found in the snapshot reviewed.",
+    "short": "Negotiation-focused team serving Cypress and nearby Northwest Houston. HAR shows recent area activity, but no verified aggregate score appears in this snapshot.",
     "facts": [
       {
         "text": "HAR and her RE/MAX biography list Michele Harmon with RE/MAX Universal.",
@@ -99,24 +111,32 @@
         "source": 1
       },
       {
-        "text": "Her HAR profile lists the Certified Negotiation Expert designation.",
+        "text": "HAR lists the Certified Negotiation Expert credential and describes service in Cypress, Tomball, Magnolia and nearby Northwest Houston communities.",
         "source": 0
       },
       {
-        "text": "Her HAR biography describes service in Cypress, Tomball, Magnolia, and other Northwest Houston communities.",
+        "text": "Recent HAR transaction activity includes Cypress, Tomball and Spring.",
         "source": 0
+      },
+      {
+        "text": "No verified HAR Client Experience Rating or recent written recommendation was available in the reviewed snapshot. Her team website includes testimonials, some of which identify other team members, so ask who would manage your transaction.",
+        "source": 0
+      },
+      {
+        "text": "The team website advertises 1,000+ buyers and sellers and $500 million in sales. These are self-reported team figures, not independently verified here.",
+        "source": 1
       }
     ],
     "sources": [
       {
         "label": "Michele Harmon on HAR",
         "url": "https://www.har.com/michele-harmon/agent_harmonm",
-        "supports": "Brokerage affiliation, service areas, and profile-listed designation."
+        "supports": "Brokerage affiliation, service areas, listed designation, transaction activity and available client feedback."
       },
       {
         "label": "RE/MAX Universal biography",
         "url": "https://www.remax-universal-texas.com/agents/Michele%2BHarmon",
-        "supports": "Team leadership and public work phone."
+        "supports": "Team leadership, public team statements and work phone."
       }
     ]
   },
@@ -130,41 +150,36 @@
     "tel": "+12817043749",
     "official": "https://www.jillsmithteam.com/",
     "har": "https://www.har.com/jill-smith/agent_jilsmith",
-    "intro": "Jill Smith leads an eXp Realty team. Her HAR biography discusses Cypress-area communities including Copper Lakes, Copperfield, Towne Lake, Stone Gate, and Riata Ranch.",
-    "short": "An eXp Realty team leader whose HAR biography names Copper Lakes, Copperfield, Towne Lake, Stone Gate, and Riata Ranch.",
+    "intro": "Jill Smith leads an eXp team, and her HAR biography names Copper Lakes, Copperfield, Towne Lake, Stone Gate and Riata Ranch among the Cypress-area communities she serves. HAR shows 4.91/5 across 548 completed surveys for Jill individually; a September 2026 seller comment praises the straightforward process. Ask whether Jill or another team member would be your day-to-day contact.",
+    "short": "Named Cypress communities and negotiation experience; HAR rates Jill 4.91/5 across 548 surveys. Ask which team member will be your day-to-day contact.",
     "facts": [
       {
-        "text": "HAR lists Jill Smith with eXp Realty LLC.",
+        "text": "HAR lists Copper Lakes, Copperfield, Towne Lake, Stone Gate and Riata Ranch among the Cypress-area communities in her biography.",
         "source": 0
       },
       {
-        "text": "Her official website presents the Jill Smith Team.",
+        "text": "Her HAR profile lists negotiation, buyer and seller credentials including MCNE, ABR and CRS.",
+        "source": 0
+      },
+      {
+        "text": "A seller comment dated September 16, 2026 describes the process as straightforward. The 4.91/5 score across 548 completed surveys is attributed to Jill individually, not the whole team or Cypress-only transactions.",
+        "source": 0
+      },
+      {
+        "text": "Her official website presents the Jill Smith Team; confirm who would handle your day-to-day communication.",
         "source": 1
-      },
-      {
-        "text": "Her HAR biography names Cypress-area communities including Copper Lakes, Copperfield, Towne Lake, Stone Gate, and Riata Ranch.",
-        "source": 0
-      },
-      {
-        "text": "HAR lists CRS, GRI, and ABR among her designations. CRS refers to Certified Residential Specialist.",
-        "source": 0
       }
     ],
     "sources": [
       {
         "label": "Jill Smith on HAR",
         "url": "https://www.har.com/jill-smith/agent_jilsmith",
-        "supports": "Brokerage affiliation, named communities, and listed designations."
+        "supports": "Brokerage affiliation, named communities, listed credentials, survey rating and public client comments."
       },
       {
         "label": "Jill Smith Team website",
         "url": "https://www.jillsmithteam.com/",
         "supports": "Team identity and direct business phone."
-      },
-      {
-        "label": "eXp Luxury professional profile",
-        "url": "https://agents.expluxury.com/agent/18676?tl=en",
-        "supports": "Corroborating brokerage identity and direct business phone."
       }
     ]
   },
@@ -179,19 +194,23 @@
     "official": "https://www.har.com/tiffani-reynolds/agent_tiffanir",
     "official_label": "Visit public professional profile",
     "har": "https://www.har.com/tiffani-reynolds/agent_tiffanir",
-    "intro": "Tiffani Reynolds is listed with Keller Williams Signature in Katy. Her HAR profile shows Cypress-area activity and lists buyer representation, senior real estate, luxury marketing, and new-construction credentials.",
-    "short": "Listed with Keller Williams Signature in Katy. HAR lists buyer representation, senior real estate, luxury marketing, and new-construction credentials.",
+    "intro": "Tiffani Reynolds is listed with Keller Williams Signature. Her HAR-listed credentials align with buyer representation, senior moves, luxury marketing and new construction. HAR shows 4.99/5 across 148 completed surveys for Tiffani individually; the newest visible written recommendation dates to June 13, 2025, so ask for recent examples in your Cypress neighborhood.",
+    "short": "Buyer, senior moves, luxury marketing and new construction. HAR rates Tiffani 4.99/5 across 148 surveys; her newest visible written recommendation is from June 2025.",
     "facts": [
       {
-        "text": "Her HAR profile lists Keller Williams Signature as her brokerage, with an office in Katy.",
+        "text": "HAR lists ABR and SRES credentials, which relate to buyer representation and senior real estate, along with luxury-marketing and new-home-construction credentials.",
         "source": 0
       },
       {
-        "text": "HAR lists ABR (Accredited Buyer Representative) and SRES (Seniors Real Estate Specialist) among her designations.",
+        "text": "HAR shows a 4.99/5 Client Experience Rating across 148 completed surveys for Tiffani individually.",
         "source": 0
       },
       {
-        "text": "The same profile lists Certified Luxury Home Marketing Specialist and New Home Construction credentials, and displays Cypress-area transaction activity.",
+        "text": "The newest visible written HAR recommendation is dated June 13, 2025; ask for recent examples specific to your Cypress neighborhood.",
+        "source": 0
+      },
+      {
+        "text": "HAR lists Keller Williams Signature as her brokerage, with an office in Katy, and displays Cypress-area transaction activity.",
         "source": 0
       }
     ],
@@ -199,7 +218,7 @@
       {
         "label": "Tiffani Reynolds on HAR",
         "url": "https://www.har.com/tiffani-reynolds/agent_tiffanir",
-        "supports": "Professional identity, brokerage, office location, profile-listed credentials, activity, and public cell phone."
+        "supports": "Professional identity, brokerage, service credentials, transaction activity, survey rating and public client comments."
       }
     ]
   },
@@ -213,32 +232,44 @@
     "tel": "+17132067653",
     "official": "https://www.thecollettekingteam.com/",
     "har": "https://www.har.com/collette-king/agent_collette",
-    "intro": "Collette King leads The Collette King Team at RE/MAX Universal. The team website lists a Cypress office and names Cypress, Tomball, Spring, Katy, and other Houston-area communities among its service areas.",
-    "short": "Leader of The Collette King Team at RE/MAX Universal, with a published Cypress office and service areas across the Houston region.",
+    "intro": "Collette King leads The Collette King Team at RE/MAX Universal. HAR lists more than 27 years in real estate, Hall of Fame recognition and Diamond Awards from 2019 through 2025; recent activity includes Cypress and Montgomery. Her team website emphasizes seller preparation, staging and marketing. HAR shows no verified Client Experience Rating, and the visible written recommendation dates to February 14, 2020, so it is older evidence rather than a current service read.",
+    "short": "27+ years in real estate, with HAR-listed Hall of Fame and Diamond Award honors. Her team emphasizes seller preparation and staging; current review evidence is limited.",
     "facts": [
       {
-        "text": "HAR lists Collette King with RE/MAX Universal and describes her work with The Collette King Team.",
+        "text": "HAR describes more than 27 years in real estate and lists RE/MAX Hall of Fame and Diamond Award recognition for 2019–2025.",
         "source": 0
       },
       {
-        "text": "The team’s website publishes an office address in Cypress and a direct business phone for Collette King.",
+        "text": "HAR transaction activity includes Cypress and Montgomery in September 2026.",
+        "source": 0
+      },
+      {
+        "text": "The team website describes seller preparation, pricing, staging and marketing services.",
         "source": 1
       },
       {
-        "text": "The team website names Cypress, Tomball, Spring, Katy, and other Houston-area communities among its service areas.",
+        "text": "No verified HAR Client Experience Rating is shown in the reviewed snapshot. The visible written HAR recommendation is dated February 14, 2020, so it is not recent evidence of current service.",
+        "source": 0
+      },
+      {
+        "text": "The team website lists a Cypress office and names Cypress, Tomball, Spring, Katy and other Houston-area communities among its service areas.",
         "source": 1
+      },
+      {
+        "text": "HAR describes Collette King’s work with The Collette King Team; ask which team member would handle your day-to-day communication.",
+        "source": 0
       }
     ],
     "sources": [
       {
         "label": "Collette King on HAR",
         "url": "https://www.har.com/collette-king/agent_collette",
-        "supports": "Professional identity, brokerage affiliation, and team leadership."
+        "supports": "Professional identity, brokerage affiliation, team leadership, background, transaction activity and public client feedback."
       },
       {
         "label": "The Collette King Team website",
         "url": "https://www.thecollettekingteam.com/",
-        "supports": "Cypress office, stated service areas, and direct business phone."
+        "supports": "Cypress office, stated service areas, seller services and direct business phone."
       }
     ]
   },
@@ -252,19 +283,31 @@
     "tel": "+12814136401",
     "official": "https://soldbychristineobrien.com/",
     "har": "https://www.har.com/christine-obrien/agent_chobrien",
-    "intro": "Christine O’Brien is listed with Keller Williams Houston Central. Her personal website describes services for first-time buyers, new construction, and relocation in Cypress, Conroe, The Woodlands, and Magnolia.",
-    "short": "Listed with Keller Williams Houston Central. Her website describes first-time buyer, new-construction, and relocation services.",
+    "intro": "Christine O’Brien’s website describes work with first-time buyers, new construction and relocation in Cypress, Conroe, The Woodlands and Magnolia. HAR shows recent buyer activity in Magnolia and Houston in September 2026 and a Cypress seller transaction in August 2026; no verified Client Experience Rating or recent written recommendation was present in the snapshot reviewed.",
+    "short": "First-time buyers, new construction and relocation. Recent HAR activity includes Cypress, Magnolia and Houston; no verified aggregate score appears in this snapshot.",
     "facts": [
       {
         "text": "HAR identifies Christine O’Brien with Keller Williams Houston Central.",
         "source": 0
       },
       {
-        "text": "Her personal website describes first-time buyer, new-construction, and relocation services.",
+        "text": "Her website describes first-time buyer, new-construction and relocation services.",
         "source": 1
       },
       {
-        "text": "Her website names Cypress, Conroe, The Woodlands, and Magnolia among the communities she serves.",
+        "text": "Her website names Cypress, Conroe, The Woodlands and Magnolia among the communities she serves.",
+        "source": 1
+      },
+      {
+        "text": "HAR activity includes buyer transactions in Magnolia and Houston in September 2026 and a Cypress seller transaction in August 2026.",
+        "source": 0
+      },
+      {
+        "text": "No verified HAR Client Experience Rating or recent written recommendation was available in the reviewed snapshot.",
+        "source": 0
+      },
+      {
+        "text": "Her website lists $30M+ closed in one section and $10M+ since 2022 in another. These differently scoped, self-published figures are not combined or included here as a sales-volume total.",
         "source": 1
       }
     ],
@@ -272,12 +315,12 @@
       {
         "label": "Christine O’Brien on HAR",
         "url": "https://www.har.com/christine-obrien/agent_chobrien",
-        "supports": "Matched professional identity and brokerage affiliation."
+        "supports": "Professional identity, brokerage affiliation, recent transaction activity and available client feedback."
       },
       {
         "label": "Sold by Christine O’Brien website",
         "url": "https://soldbychristineobrien.com/",
-        "supports": "Self-described services and service areas."
+        "supports": "Self-described services, service areas and sales-volume statements."
       },
       {
         "label": "Public HAR listing contact",
