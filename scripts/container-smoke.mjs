@@ -13,9 +13,11 @@ assert(
     !target.hash,
   'Smoke target must be an HTTP loopback origin without credentials, path, query or fragment',
 );
-const base = target.origin;
+const base = new URL('http://127.0.0.1');
+if (target.hostname === '[::1]') base.hostname = '[::1]';
+base.port = target.port;
 const request = (route, timeout = 5000) =>
-  fetch(base + route, {
+  fetch(new URL(route, base), {
     signal: AbortSignal.timeout(timeout),
     redirect: 'error',
   });
@@ -34,7 +36,9 @@ for (let attempt = 0; attempt < 50; attempt++) {
   } catch (error) {
     if (attempt === 49)
       throw new Error(
-        'Serving readiness failed after 50 attempts: ' + base + '/healthz',
+        'Serving readiness failed after 50 attempts: ' +
+          base.origin +
+          '/healthz',
         { cause: error },
       );
     await setTimeout(200);
