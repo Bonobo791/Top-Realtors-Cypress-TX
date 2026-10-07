@@ -8,6 +8,8 @@ Hand-authored inputs are src/, public/, deploy/, scripts/, tests/, configuration
 
 Configuration contracts are in environment.md; route/access/indexing/cache contracts are in routes.md. Use Node 24.19/npm 11.9 and the single lockfile. npm ci runs normal lifecycle scripts. No provider account or production credentials are needed.
 
-Forbidden effects: changes in another repository, publication of the superseded Python branch, writes outside task-owned repository paths or owned isolated fixtures, new-branch push without parent approval, merge, deployment, DNS changes, production/provider access, private-data fixtures or outgoing reviewer/bot/customer messages. Fixtures reset synthetic state and remove only owned files/containers.
+Task-owned edits to tracked source, configuration, tests and documentation are allowed in the isolated target checkout. Temporary fixture writes and cleanup must stay within each task's owned fixture files/directories or containers.
+
+Forbidden effects: changes in another repository, publication of the superseded Python branch, temporary writes or cleanup outside owned isolated fixtures, new-branch push without parent approval, merge, deployment, DNS changes, production/provider access, private-data fixtures or outgoing reviewer/bot/customer messages. Fixtures reset synthetic state and remove only owned files/containers.
 
 Each task's positive/negative case and independent oracle appear in its row or the invariant register. Actual regression failures, replay seed/path, scoped mutation accounting and browser/container observations are in verification.md. Files/dependencies/workflows alone do not establish completion.

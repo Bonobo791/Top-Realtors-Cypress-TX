@@ -9,8 +9,9 @@ COPY astro.config.mjs tsconfig.json ./
 COPY src ./src
 COPY public ./public
 COPY scripts ./scripts
-ARG SOURCE_COMMIT=local
-RUN BUILD_COMMIT="$SOURCE_COMMIT" npm run build && chmod -R a+rX dist
+ARG SOURCE_COMMIT
+RUN test -n "$SOURCE_COMMIT" || { echo 'SOURCE_COMMIT is required: use the full source SHA, or local for a disposable development image' >&2; exit 1; }; \
+    BUILD_COMMIT="$SOURCE_COMMIT" npm run build && chmod -R a+rX dist
 
 FROM nginx:stable-alpine@sha256:0985e772fb9f729e6fa0980da05fca5d9c468e870eed43071545afa9d2e27d94
 RUN rm -rf /usr/share/nginx/html/*

@@ -232,3 +232,30 @@ test('JSON-LD cannot close its data script and preserves source text', () => {
   expect(encoded).not.toContain('<');
   expect(JSON.parse(encoded)).toEqual(value);
 });
+
+test.each(['Another Agent', 'Amy Lippincott Jr.'])(
+  'the sponsored snapshot rejects an unrelated rated subject: %s',
+  (subject) => {
+    const changed = structuredClone(ratings);
+    changed['lippincott-team'].subject = subject;
+    expect(() =>
+      parseRatingSnapshot(changed, parseDirectory(agents)),
+    ).toThrow();
+  },
+);
+test('the sponsored individual remains Amy Lippincott after whitespace normalization', () => {
+  const changed = structuredClone(ratings);
+  changed['lippincott-team'].subject = '  Amy Lippincott  ';
+  expect(
+    parseRatingSnapshot(changed, parseDirectory(agents))['lippincott-team']
+      .subject,
+  ).toBe('Amy Lippincott');
+});
+test('an unknown team requires an explicit rated individual binding', () => {
+  const changed = parseDirectory(agents);
+  changed.find((agent) => agent.slug === 'kevan-pewitt')!.type =
+    'Real estate team';
+  const snapshots = structuredClone(ratings);
+  snapshots['kevan-pewitt'].subject = 'Amy Lippincott';
+  expect(() => parseRatingSnapshot(snapshots, changed)).toThrow();
+});

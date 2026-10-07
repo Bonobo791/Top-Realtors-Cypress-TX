@@ -11,6 +11,17 @@ import {
   orderProfiles,
 } from '../src/lib/contracts';
 import { propertyOptions } from './property-options.mjs';
+test('PBT the sponsored team snapshot cannot be attributed to another individual', () =>
+  fc.assert(
+    fc.property(fc.string({ maxLength: 80 }), (name) => {
+      const changed = structuredClone(ratings);
+      changed['lippincott-team'].subject = 'Other individual: ' + name;
+      expect(() =>
+        parseRatingSnapshot(changed, parseDirectory(agents)),
+      ).toThrow();
+    }),
+    propertyOptions(),
+  ));
 test('PBT formatted phone numbers match their dial target and reject a changed digit', () =>
   fc.assert(
     fc.property(

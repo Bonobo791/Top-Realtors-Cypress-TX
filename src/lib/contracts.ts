@@ -2,6 +2,10 @@ import { z } from 'zod';
 export const ORIGIN = 'https://toprealtorscypresstx.com';
 export const SPONSORED_SLUG = 'lippincott-team';
 export const FACTS_CHECKED = 'October 3, 2026';
+// HAR feedback on the sponsored organization belongs to its named individual.
+const teamRatingSubjects: Readonly<Record<string, string>> = {
+  [SPONSORED_SLUG]: 'Amy Lippincott',
+};
 const text = z.string().trim().min(1);
 const webUrl = text.refine((value) => {
   try {
@@ -130,10 +134,9 @@ export function parseRatingSnapshot(
       throw new Error('Rating must match a profile and its HAR source');
     if (rating.checked > asOf)
       throw new Error('Rating check date cannot be in the future');
-    if (isTeam(agent) && rating.subject === agent.name)
-      throw new Error('Individual survey cannot become a team rating');
-    if (!isTeam(agent) && rating.subject !== agent.name)
-      throw new Error('Individual rating subject must match its profile');
+    const subject = isTeam(agent) ? teamRatingSubjects[agent.slug] : agent.name;
+    if (!subject || rating.subject !== subject)
+      throw new Error('Rating subject must match its verified individual');
   }
   return parsed;
 }
