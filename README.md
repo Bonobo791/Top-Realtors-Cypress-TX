@@ -1,6 +1,6 @@
 # Top Realtors Cypress TX
 
-An Astro/TypeScript website for RealtorsCypressTX.com, built from the Site-Bootstrap-ADM foundation at `916df29d7410b4a9a5048ed69819b5da448a2ecf`. It has a directory homepage, seven source-linked profiles, Terms, Privacy and a custom 404 page. Lippincott appears first with a visible Sponsored listing badge; other profiles are alphabetical. Named HAR survey snapshots retain platform, count, subject, check date and individual scope.
+An Astro/TypeScript website for RealtorsCypressTX.com, built from the Site-Bootstrap-ADM foundation at `916df29d7410b4a9a5048ed69819b5da448a2ecf`. It has a directory homepage, seven source-linked profiles, Terms, Privacy and a custom 404 page. The site calls Lippincott “Our #1 choice.” Its feature card and profile disclose “Paid placement,” and its directory row is labeled “Sponsored listing”; other profiles are alphabetical. “Our #1 choice” is the publisher’s editorial selection, not a HAR rating or calculated performance ranking. Named HAR survey snapshots retain platform, count, subject, check date and individual scope.
 
 This branch replaces the earlier Python export pipeline. Astro content collections validate Git-backed JSON and native Astro layouts/components render the site. No CMS service, forms, accounts, lead backend, tracking or third-party font requests are selected. The approved responsive design and licensed photo copies are preserved.
 

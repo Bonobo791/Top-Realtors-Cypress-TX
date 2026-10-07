@@ -101,8 +101,24 @@ for (const width of [1440, 375, 320])
           'data-profile',
           'lippincott-team',
         );
-        await expect(page.locator('.feature-card .sponsored-badge')).toHaveText(
-          'Sponsored listing',
+        await expect(
+          page.locator('.feature-card .sponsored-badge'),
+        ).toHaveCount(0);
+        await expect(page.locator('.feature-card')).toContainText(
+          'Our #1 choice. Led by Amy Lippincott. Buying and selling services across Northwest Houston, including Cypress, Tomball, and Katy.',
+        );
+        await expect(page.locator('.feature-card .note')).toContainText(
+          'Paid placement · eXp Realty LLC.',
+        );
+        const sponsorshipFaq = page.locator('#faq details').nth(1).locator('p');
+        await expect(sponsorshipFaq).toContainText(
+          'Paid placement · eXp Realty LLC.',
+        );
+        await expect(sponsorshipFaq).toContainText(
+          'profile page says “Paid placement.”',
+        );
+        await expect(sponsorshipFaq).toContainText(
+          'directory row is labeled “Sponsored listing.”',
         );
         const badge = page
           .locator('.agent-row')
@@ -169,7 +185,10 @@ for (const width of [1440, 375, 320])
         const r = ratings[a.slug as keyof typeof ratings];
         await checkRating(page.locator('.rating-panel'), r);
         if (a.slug === 'lippincott-team') {
-          await expect(page.locator('.sponsored-badge')).toBeVisible();
+          await expect(page.locator('.sponsored-badge')).toHaveCount(0);
+          await expect(page.locator('.notice')).toContainText(
+            'Paid placement.',
+          );
           await screenshot(page, 'profile-' + width);
         }
       }
