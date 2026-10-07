@@ -129,10 +129,22 @@ for (const width of [1440, 375, 320])
         await expect(page).toHaveURL(/#main$/);
         const directory = page.locator('.hero-actions a[href="#directory"]');
         await expect(directory).toBeVisible();
-        // Instant test-side scrolling keeps native smooth scrolling from moving the pointer target.
+        // Request instant scrolling, then wait for the target to stop moving.
         await directory.evaluate((el) =>
           el.scrollIntoView({ behavior: 'instant', block: 'center' }),
         );
+        let previousY: number | undefined;
+        await expect
+          .poll(
+            async () => {
+              const y = (await directory.boundingBox())?.y;
+              const stable = y !== undefined && y === previousY;
+              previousY = y;
+              return stable;
+            },
+            { intervals: [100] },
+          )
+          .toBe(true);
         // Pointer actions avoid the animation-frame stability wait in no-JS documents.
         await directory.click({ force: true });
         await expect(page).toHaveURL(/#directory$/);
