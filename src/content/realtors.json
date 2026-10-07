@@ -358,7 +358,7 @@
         "source": 0
       },
       {
-        "text": "HAR’s recent activity includes buyer, seller and rental work in the Cypress and Montgomery areas. Activity shows current reach, but it does not substitute for client feedback.",
+        "text": "Recent HAR sold entries show Cypress buyer and seller activity, plus a Montgomery seller closing in September 2026. This shows activity across the service area, but not the quality of client service.",
         "source": 2
       },
       {
@@ -368,6 +368,10 @@
       {
         "text": "One undated team-site testimonial describes guidance during the sale of a family home after a bereavement, including advice on updates and pricing. Ask for a current example if you need support with an inherited property.",
         "source": 3
+      },
+      {
+        "text": "HAR records a seller-side rental of a Cypress single-family home on April 17, 2026, showing recent leasing activity alongside sales.",
+        "source": 4
       }
     ],
     "sources": [
@@ -390,6 +394,11 @@
         "label": "Collette King Team seller testimonials",
         "url": "https://www.thecollettekingteam.com/resources/sellers",
         "supports": "Self-published seller testimonials about Cypress knowledge, listing preparation, contractor coordination and offer handling; dates are not displayed."
+      },
+      {
+        "label": "Collette King HAR rental activity",
+        "url": "https://www.har.com/realestatepro/rented-by-agent/COLLETTE",
+        "supports": "Recent rental entries, including a Cypress single-family home represented for the seller."
       }
     ]
   },
