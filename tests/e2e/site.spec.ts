@@ -173,7 +173,9 @@ for (const width of [1440, 375, 320])
         await checkRating(page.locator('.rating-panel'), r);
         if (a.slug === 'lippincott-team') {
           await expect(page.locator('.sponsored-badge')).toHaveCount(0);
-          await expect(page.locator('.notice')).toContainText('Paid placement.');
+          await expect(page.locator('.notice')).toContainText(
+            'Paid placement.',
+          );
           await screenshot(page, 'profile-' + width);
         }
       }
