@@ -64,6 +64,20 @@ export const agentSchema = z
         path: ['tel'],
         message: 'Phone text and telephone target must be supplied together',
       });
+    if (agent.phone && agent.tel) {
+      const digits = agent.phone.replace(/\D/g, '');
+      const target = agent.tel.slice(1);
+      const localNorthAmerican =
+        target.length === 11 &&
+        target.startsWith('1') &&
+        digits === target.slice(1);
+      if (digits !== target && !localNorthAmerican)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['tel'],
+          message: 'Phone text must match its telephone target',
+        });
+    }
   });
 export type Agent = z.infer<typeof agentSchema>;
 const directorySchema = z

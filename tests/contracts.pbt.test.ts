@@ -11,6 +11,31 @@ import {
   orderProfiles,
 } from '../src/lib/contracts';
 import { propertyOptions } from './property-options.mjs';
+test('PBT formatted phone numbers match their dial target and reject a changed digit', () =>
+  fc.assert(
+    fc.property(
+      fc.constantFrom('1', '44'),
+      fc.stringMatching(/^[2-9][0-9]{9}$/),
+      (country, digits) => {
+        const data = structuredClone(agents);
+        const tel = '+' + country + digits;
+        const phone =
+          country === '1'
+            ? '(' +
+              digits.slice(0, 3) +
+              ') ' +
+              digits.slice(3, 6) +
+              '-' +
+              digits.slice(6)
+            : '+' + country + ' ' + digits.slice(0, 4) + ' ' + digits.slice(4);
+        Object.assign(data[0], { phone, tel });
+        expect(parseDirectory(data)[0].tel).toBe(tel);
+        data[0].tel = tel.slice(0, -1) + ((Number(tel.at(-1)) + 1) % 10);
+        expect(() => parseDirectory(data)).toThrow();
+      },
+    ),
+    propertyOptions(),
+  ));
 test('PBT alphabetical order honors only a leading The for every fixture permutation', () => {
   const displayNames = [
     'The Apple',

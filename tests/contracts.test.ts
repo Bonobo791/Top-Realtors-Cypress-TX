@@ -68,6 +68,38 @@ test('telephone target and visible phone must remain paired and safe', () => {
   expect(() => parseDirectory(data)).toThrow();
 });
 test.each([
+  ['713-555-0100', '+17134941818'],
+  ['713-494-1818', '+17135550100'],
+  ['713-494-1818', '+447134941818'],
+  ['713-494-1818', '+27134941818'],
+  ['713-4941', '+17134941'],
+])(
+  'rejects a different displayed phone %s and dial target %s',
+  (phone, tel) => {
+    const data = structuredClone(agents);
+    Object.assign(data[0], { phone, tel });
+    expect(() => parseDirectory(data)).toThrow();
+  },
+);
+test.each([
+  ['(713) 494-1818', '+17134941818'],
+  ['+1 (713) 494-1818', '+17134941818'],
+  ['1.713.494.1818', '+17134941818'],
+  ['+44 20 7946 0958', '+442079460958'],
+])('accepts formatting of the same phone %s and target %s', (phone, tel) => {
+  const data = structuredClone(agents);
+  Object.assign(data[0], { phone, tel });
+  expect(parseDirectory(data)[0]).toMatchObject({ phone, tel });
+});
+test('a profile may omit both phone fields', () => {
+  const data = structuredClone(agents);
+  Reflect.deleteProperty(data[0], 'phone');
+  Reflect.deleteProperty(data[0], 'tel');
+  const parsed = parseDirectory(data)[0];
+  expect(parsed.phone).toBeUndefined();
+  expect(parsed.tel).toBeUndefined();
+});
+test.each([
   'not a URL',
   'https://user@example.test/',
   'https://:pass@example.test/',

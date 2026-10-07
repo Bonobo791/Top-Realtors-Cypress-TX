@@ -7,7 +7,12 @@ import { join, resolve } from 'node:path';
 import agents from '../src/content/realtors.json';
 import site from '../src/content/site.json';
 
-async function smoke(indexing: boolean, robots: string | null, decoy = false) {
+async function smoke(
+  indexing: boolean,
+  robots: string | null,
+  decoy = false,
+  canonical: 'valid' | 'missing' | 'wrong' | 'duplicate' = 'valid',
+) {
   const root = mkdtempSync(join(tmpdir(), 'cypress-smoke-'));
   mkdirSync(join(root, 'src/content'), { recursive: true });
   writeFileSync(
@@ -44,11 +49,18 @@ async function smoke(indexing: boolean, robots: string | null, decoy = false) {
         }),
       );
     } else if (routes.has(route)) {
-      response.end(
+      const link =
         '<link rel="canonical" href="' +
+        site.origin +
+        (canonical === 'wrong' ? '/wrong.html' : route) +
+        '">';
+      response.end(
+        '<meta property="og:url" content="' +
           site.origin +
           route +
           '">' +
+          (canonical === 'missing' ? '' : link) +
+          (canonical === 'duplicate' ? link : '') +
           (robots === null
             ? ''
             : '<meta name="robots" content="' + robots + '">') +
@@ -124,3 +136,10 @@ test('actual smoke command requires robots metadata rather than a body substring
   const result = await smoke(false, null, true);
   expect(result.code, result.output).not.toBe(0);
 });
+test.each(['missing', 'wrong', 'duplicate'] as const)(
+  'actual smoke rejects %s canonical links despite correct og:url metadata',
+  async (canonical) => {
+    const result = await smoke(false, 'noindex, follow', false, canonical);
+    expect(result.code, result.output).not.toBe(0);
+  },
+);

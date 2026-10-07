@@ -32,8 +32,15 @@ for (const route of routes) {
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
   assert.equal(r.headers.get('x-content-type-options'), 'nosniff');
   assert.equal(r.headers.get('cache-control'), 'no-cache');
-  assert(html.includes('https://toprealtorscypresstx.com' + route));
-  const robots = load(html)('meta[name=robots]');
+  const $ = load(html);
+  const canonical = $('link[rel=canonical]');
+  assert.equal(canonical.length, 1, 'Exactly one canonical link: ' + route);
+  assert.equal(
+    canonical.attr('href'),
+    site.origin + route,
+    'Canonical URL: ' + route,
+  );
+  const robots = $('meta[name=robots]');
   assert.equal(robots.length, 1, 'Exactly one robots meta tag: ' + route);
   assert.equal(
     robots.attr('content'),

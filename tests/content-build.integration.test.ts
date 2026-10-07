@@ -16,6 +16,7 @@ import { load } from 'cheerio';
 let root: string;
 beforeAll(() => {
   root = mkdtempSync(join(tmpdir(), 'cypress-astro-content-'));
+  mkdirSync(join(root, 'tests'));
   for (const item of [
     'src',
     'public',
@@ -23,6 +24,8 @@ beforeAll(() => {
     'astro.config.mjs',
     'tsconfig.json',
     'package.json',
+    'playwright.config.ts',
+    'tests/e2e',
   ])
     cpSync(resolve(item), join(root, item), { recursive: true });
   symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
@@ -132,7 +135,7 @@ test('restoring tracked content recovers the complete static build', () => {
     existsSync(join(root, 'dist/realtors/michele-harmon-renamed.html')),
   ).toBe(false);
 }, 30000);
-test('actual output checker rejects corrupt rating scores and platform labels on home and profile', () => {
+test('actual output checker rejects corrupt rating scores, counts and platform labels on home and profile', () => {
   cpSync(
     resolve('src/content/realtors.json'),
     join(root, 'src/content/realtors.json'),
@@ -146,6 +149,8 @@ test('actual output checker rejects corrupt rating scores and platform labels on
     for (const [from, to] of [
       ['4.92 / 5', '0.12 / 5'],
       ['HAR Client Experience Rating', 'Other Platform'],
+      ['688 completed surveys', '1688 completed surveys'],
+      ['688 completed surveys', '6880 completed surveys'],
     ]) {
       expect(original).toContain(from);
       writeFileSync(file, original.replace(from, to));
@@ -160,6 +165,43 @@ test('actual output checker rejects corrupt rating scores and platform labels on
   expect(statuses).toEqual(
     statuses.map((item) => ({ ...item, rejected: true })),
   );
+}, 30000);
+test('browser test inventory omits a draft profile and retains published routes', () => {
+  const file = join(root, 'src/content/realtors.json');
+  const original = readFileSync(file, 'utf8');
+  const data = JSON.parse(original);
+  data.find(
+    (agent: { slug: string }) => agent.slug === 'michele-harmon',
+  ).draft = true;
+  writeFileSync(file, JSON.stringify(data));
+  try {
+    const listed = spawnSync(
+      resolve('node_modules/.bin/playwright'),
+      ['test', '--list', '--reporter=json'],
+      {
+        cwd: root,
+        encoding: 'utf8',
+        timeout: 30000,
+      },
+    );
+    expect(listed.status, listed.stdout + listed.stderr).toBe(0);
+    const titles: string[] = JSON.parse(listed.stdout).suites.flatMap(
+      (suite: { specs: { title: string }[] }) =>
+        suite.specs.map((spec) => spec.title),
+    );
+    expect(
+      titles.filter((title) => title.includes('/realtors/michele-harmon.html')),
+    ).toEqual([]);
+    expect(titles).toHaveLength(36);
+    for (const width of [1440, 375, 320]) {
+      expect(titles).toContain(`${width}px no-JS /`);
+      expect(titles).toContain(
+        `${width}px no-JS /realtors/lippincott-team.html`,
+      );
+    }
+  } finally {
+    writeFileSync(file, original);
+  }
 }, 30000);
 test('actual indexing-enabled build emits index metadata while404 remains noindex', () => {
   const file = join(root, 'src/content/site.json');

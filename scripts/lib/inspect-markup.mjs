@@ -38,6 +38,8 @@ export function inspectMarkup(root, file) {
   });
   $('*').each((_, el) => {
     const node = $(el);
+    if (Object.keys(el.attribs).some((name) => /^on/i.test(name)))
+      fail('Inline event handler');
     const values = [];
     for (const key of [
       'href',

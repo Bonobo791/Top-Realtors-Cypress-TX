@@ -23,6 +23,23 @@ afterEach(() =>
     .forEach((dir) => rmSync(dir, { recursive: true, force: true })),
 );
 test.each([
+  '<body onload="alert(1)"><main>Page</main></body>',
+  '<button onclick="alert(1)">Click</button>',
+  '<img OnErRoR="alert(1)" alt=""/>',
+  '<svg onload="alert(1)"></svg>',
+])('rejects inline event handler attributes: %s', (html) => {
+  const { root, file } = fixture(html);
+  expect(inspectMarkup(root, file).failures.join(' ')).toContain(
+    'Inline event handler',
+  );
+});
+test('escaped event-handler text and data attributes remain inert', () => {
+  const { root, file } = fixture(
+    '<p data-onclick="text">&lt;img onerror="alert(1)"&gt;</p><script type="application/ld+json">{"name":"onload=example"}</script>',
+  );
+  expect(inspectMarkup(root, file)).toEqual({ references: 0, failures: [] });
+});
+test.each([
   'mailto:test@example.com',
   'tel:+17135550100',
   'data:image/png;base64,abcd',

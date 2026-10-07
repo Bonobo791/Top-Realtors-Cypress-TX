@@ -1,7 +1,9 @@
 import { expect, test, type Page, type Locator } from '@playwright/test';
 import { writeFileSync, mkdirSync } from 'node:fs';
-import agents from '../../src/content/realtors.json' with { type: 'json' };
+import agentData from '../../src/content/realtors.json' with { type: 'json' };
 import ratings from '../../src/content/ratings.json' with { type: 'json' };
+import { parseDirectory } from '../../src/lib/contracts';
+const agents = parseDirectory(agentData).filter((agent) => !agent.draft);
 const paths = [
   '/',
   '/terms.html',
@@ -20,7 +22,9 @@ async function checkRating(
   );
   const body = await panel.innerText();
   expect(body.toLowerCase()).toContain(rating.subject.toLowerCase());
-  expect(body).toContain(`${rating.count} ${rating.count_type}`);
+  await expect(panel.locator('.rating-score + span')).toHaveText(
+    `${rating.count} ${rating.count_type}`,
+  );
   expect(body).toContain(rating.scope);
   await expect(panel.locator('a')).toHaveText(rating.platform);
   await expect(panel.locator('a')).toHaveAttribute('href', rating.source);
@@ -122,14 +126,21 @@ for (const width of [1440, 375, 320])
         await page.keyboard.press('Tab');
         await expect(page.locator('.skip')).toBeFocused();
         await page.keyboard.press('Enter');
-        expect(page.url()).toContain('#main');
+        await expect(page).toHaveURL(/#main$/);
         const directory = page.locator('.hero-actions a[href="#directory"]');
         await expect(directory).toBeVisible();
+        // Instant test-side scrolling keeps native smooth scrolling from moving the pointer target.
+        await directory.evaluate((el) =>
+          el.scrollIntoView({ behavior: 'instant', block: 'center' }),
+        );
         // Pointer actions avoid the animation-frame stability wait in no-JS documents.
         await directory.click({ force: true });
-        expect(page.url()).toContain('#directory');
+        await expect(page).toHaveURL(/#directory$/);
         const faq = page.locator('#faq summary').first();
         await expect(faq).toBeVisible();
+        await faq.evaluate((el) =>
+          el.scrollIntoView({ behavior: 'instant', block: 'center' }),
+        );
         await faq.click({ force: true });
         await expect(page.locator('#faq details').first()).toHaveAttribute(
           'open',

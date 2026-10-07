@@ -10,8 +10,11 @@ export function inspectRating(panel, rating) {
     `${rating.value} / 5`,
     'Rating score',
   );
-  assert(
-    text.includes(`${rating.count} ${rating.count_type}`),
+  const count = panel.find('.rating-score').siblings('span');
+  assert.equal(count.length, 1, 'Exactly one rating count field');
+  assert.equal(
+    count.text().trim(),
+    `${rating.count} ${rating.count_type}`,
     'Rating count and type',
   );
   assert(
