@@ -1,6 +1,6 @@
 # Route contracts
 
-Adapted from Site-Bootstrap-ADM's route matrix. Canonical origin: https://toprealtorscypresstx.com; base /; file-style .html profile/legal URLs; root / remains root. Existing seven URLs are preserved without a redirect migration.
+Adapted from Site-Bootstrap-ADM's route matrix. Canonical origin: https://realtorscypresstx.com; base /; file-style .html profile/legal URLs; root / remains root. Existing seven URLs are preserved without a redirect migration.
 
 | Path/family                         | Render/access                             | Mutation | Indexing/cache                                           | Analytics | Verification                                 |
 | ----------------------------------- | ----------------------------------------- | -------- | -------------------------------------------------------- | --------- | -------------------------------------------- |

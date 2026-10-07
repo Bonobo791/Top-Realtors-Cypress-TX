@@ -87,7 +87,7 @@ for (const width of [1440, 375, 320])
       ).toBe(true);
       await expect(page.locator('link[rel=canonical]')).toHaveAttribute(
         'href',
-        'https://toprealtorscypresstx.com' + path,
+        'https://realtorscypresstx.com' + path,
       );
       if (path === '/') {
         for (const agent of agents)

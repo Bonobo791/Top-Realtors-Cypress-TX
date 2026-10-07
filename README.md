@@ -1,6 +1,6 @@
 # Top Realtors Cypress TX
 
-An Astro/TypeScript website for TopRealtorsCypressTX.com, built from the Site-Bootstrap-ADM foundation at `916df29d7410b4a9a5048ed69819b5da448a2ecf`. It has a directory homepage, seven source-linked profiles, Terms, Privacy and a custom 404 page. Lippincott appears first with a visible Sponsored listing badge; other profiles are alphabetical. Named HAR survey snapshots retain platform, count, subject, check date and individual scope.
+An Astro/TypeScript website for RealtorsCypressTX.com, built from the Site-Bootstrap-ADM foundation at `916df29d7410b4a9a5048ed69819b5da448a2ecf`. It has a directory homepage, seven source-linked profiles, Terms, Privacy and a custom 404 page. Lippincott appears first with a visible Sponsored listing badge; other profiles are alphabetical. Named HAR survey snapshots retain platform, count, subject, check date and individual scope.
 
 This branch replaces the earlier Python export pipeline. Astro content collections validate Git-backed JSON and native Astro layouts/components render the site. No CMS service, forms, accounts, lead backend, tracking or third-party font requests are selected. The approved responsive design and licensed photo copies are preserved.
 
@@ -28,6 +28,6 @@ The multi-stage Dockerfile builds with Node and serves only Astro output through
 
 Use the [Coolify runbook](docs/coolify.md), [verification evidence](docs/verification.md), [plan amendment](docs/project-plan.md), [bootstrap requirement map](docs/bootstrap-tasks.md), [routes](docs/routes.md), [environment registry](docs/environment.md) and [invariants](docs/testing-invariants.md). Site-Bootstrap-ADM includes guidance/templates and a runnable demo, not a finished Astro application; this target instantiates its actual shared-layout/content/SEO/test/container contracts. The copied property-options helper and adapted templates retain their [MIT notice](docs/vendor/Site-Bootstrap-ADM-LICENSE.txt).
 
-The canonical HTTPS origin is fixed to `https://toprealtorscypresstx.com`, profile URLs end in `.html`, and preview indexing is off. Enabling indexing requires an approved source change/rebuild. The new branch has not been pushed or deployed. Publication, real CI, Coolify/proxy settings, DNS/TLS/redirects, log practices and rollback are separate release gates.
+The canonical HTTPS origin is fixed to `https://realtorscypresstx.com`, profile URLs end in `.html`, and indexing is enabled for the authorized public launch. Indexing changes require a source change/rebuild. Live deployment evidence is recorded in the release handoff; real CI, DNS/TLS/redirects, log practices and rollback require actual host verification.
 
 `docs/export-verification.md` and `docs/pr1-triage.md` are historical records of the superseded export. [ATTRIBUTION.md](ATTRIBUTION.md) preserves photo provenance; no new overall code/design license is asserted.

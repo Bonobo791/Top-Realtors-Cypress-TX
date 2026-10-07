@@ -22,3 +22,7 @@ Phases: A1 tooling/contracts and test red→green; A2 native Astro content/pages
 Architecture alternatives considered: a corrected Python export would preserve the wrong requested product; an Astro SSR/hosted CMS stack adds unrequested services; Astro static collections provide the requested website foundation while keeping sourced content deterministic and hostable. The earlier unpublished branches are superseded and must not be published as this implementation.
 
 See bootstrap-tasks.md for exact task dependencies, files, commands, positive/negative tests and forbidden effects. EMD implementation brief keeps market/topic scope and research gaps separate from local technical readiness. No SEO position, AI recommendation or legal-clearance promise is made.
+
+## Public launch amendment — October 7, 2026
+
+The user authorized launching the existing Coolify application, selected https://realtorscypresstx.com as the public origin, and requested search-engine indexing. This replaces the earlier toprealtorscypresstx.com origin and preview noindex setting. The source contracts, build marker, canonical/SEO checks and current runbooks use the selected domain. The release handoff records the deployed SHA and live observations.

@@ -20,7 +20,7 @@ test.each([
   '/404.html',
   '/realtors/lippincott-team.html',
 ])('canonical preserves approved %s', (path) =>
-  expect(canonical(path)).toBe('https://toprealtorscypresstx.com' + path),
+  expect(canonical(path)).toBe('https://realtorscypresstx.com' + path),
 );
 test.each([
   'https://evil.test/',

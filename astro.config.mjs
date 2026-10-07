@@ -10,7 +10,7 @@ if (
 )
   throw new Error('Refusing a symlinked build output directory');
 if (
-  site.origin !== 'https://toprealtorscypresstx.com' ||
+  site.origin !== 'https://realtorscypresstx.com' ||
   typeof site.indexing !== 'boolean'
 )
   throw new Error('Invalid site configuration');
