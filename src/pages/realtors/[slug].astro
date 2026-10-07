@@ -47,9 +47,6 @@ const licenseNote = agent.license
         </div>
         <div class="profile-grid">
           <div>
-            {agent.slug === SPONSORED_SLUG && (
-              <span class="sponsored-badge">Sponsored listing</span>
-            )}
             <span class="eyebrow">{agent.type} · Public-source profile</span>
             <h1>{agent.name}</h1>
             <div class="brokerage">{agent.brokerage}</div>
@@ -67,6 +64,11 @@ const licenseNote = agent.license
               </ExternalLink>
             </div>
             <p class="notice">
+              {agent.slug === SPONSORED_SLUG && (
+                <>
+                  <strong>Paid placement.</strong>{' '}
+                </>
+              )}
               This editorial profile is separate from the official website for{' '}
               {agent.name}. Use the linked professional pages for current
               services, availability, and contact details.
