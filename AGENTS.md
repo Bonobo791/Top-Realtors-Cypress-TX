@@ -16,4 +16,4 @@ Run `npm ci`, `npm run verify`, `npm run test:e2e`, the scoped `npm run test:mut
 
 ## Content and public boundaries
 
-Preserve seven verified profiles, stable .html routes, linked source citations and licensed responsive photo copies. Lippincott is first and visibly marked “Sponsored listing” in feature, directory and profile. Individual HAR ratings retain subject/count/platform/date/scope; missing metrics are omitted. No objective best-agent claim, visitor reviews or lead backend. Astro must escape source text and attributes. Local success does not establish CI, DNS/TLS, deployment or recovery.
+Preserve seven verified profiles, stable .html routes, linked source citations and licensed responsive photo copies. Lippincott is first. Keep a visible “Paid placement” disclosure in the feature card and profile; keep “Sponsored listing” on its directory row. Individual HAR ratings retain subject/count/platform/date/scope; missing metrics are omitted. Do not present an objective performance ranking or team-wide rating. Astro must escape source text and attributes. Local success does not establish CI, DNS/TLS, deployment or recovery.
