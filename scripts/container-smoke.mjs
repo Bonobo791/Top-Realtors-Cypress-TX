@@ -2,7 +2,25 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { load } from 'cheerio';
 import { setTimeout } from 'node:timers/promises';
-const base = process.argv[2] ?? 'http://127.0.0.1:8080';
+const target = new URL(process.argv[2] ?? 'http://127.0.0.1:8080');
+assert(
+  target.protocol === 'http:' &&
+    ['127.0.0.1', '[::1]'].includes(target.hostname) &&
+    !target.username &&
+    !target.password &&
+    target.pathname === '/' &&
+    !target.search &&
+    !target.hash,
+  'Smoke target must be an HTTP loopback origin without credentials, path, query or fragment',
+);
+const base = new URL('http://127.0.0.1');
+if (target.hostname === '[::1]') base.hostname = '[::1]';
+base.port = target.port;
+const request = (route, timeout = 5000) =>
+  fetch(new URL(route, base), {
+    signal: AbortSignal.timeout(timeout),
+    redirect: 'error',
+  });
 const agents = JSON.parse(fs.readFileSync('src/content/realtors.json', 'utf8'));
 const site = JSON.parse(fs.readFileSync('src/content/site.json', 'utf8'));
 const routes = [
@@ -14,12 +32,15 @@ const routes = [
 for (let attempt = 0; attempt < 50; attempt++) {
   let response;
   try {
-    response = await fetch(base + '/healthz', {
-      signal: AbortSignal.timeout(2000),
-    });
+    response = await request('/healthz', 2000);
   } catch (error) {
     if (attempt === 49)
-      throw new Error('Serving readiness failed', { cause: error });
+      throw new Error(
+        'Serving readiness failed after 50 attempts: ' +
+          base.origin +
+          '/healthz',
+        { cause: error },
+      );
     await setTimeout(200);
     continue;
   }
@@ -27,7 +48,7 @@ for (let attempt = 0; attempt < 50; attempt++) {
   break;
 }
 for (const route of routes) {
-  const r = await fetch(base + route, { signal: AbortSignal.timeout(5000) });
+  const r = await request(route);
   assert.equal(r.status, 200, route);
   const html = await r.text();
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
@@ -60,7 +81,7 @@ for (const route of [
   '/50x.html',
   '/404.html',
 ]) {
-  const r = await fetch(base + route, { signal: AbortSignal.timeout(5000) });
+  const r = await request(route);
   assert.equal(r.status, 404, route);
   const html = await r.text();
   assert(html.includes('That page isn’t in the guide.'));
@@ -70,9 +91,7 @@ for (const route of [
   );
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
 }
-const marker = await (
-  await fetch(base + '/build.json', { signal: AbortSignal.timeout(5000) })
-).json();
+const marker = await (await request('/build.json')).json();
 assert.equal(marker.framework, 'Astro');
 assert.equal(marker.origin, 'https://toprealtorscypresstx.com');
 if (process.env.EXPECTED_COMMIT)
@@ -82,12 +101,11 @@ for (const route of [
   '/sitemap.xml',
   '/favicon.svg',
   '/assets/coles-crossing-morning-1320.jpg',
-])
-  assert.equal(
-    (await fetch(base + route, { signal: AbortSignal.timeout(5000) })).status,
-    200,
-    route,
-  );
+]) {
+  const response = await request(route);
+  assert.equal(response.status, 200, route);
+  await response.arrayBuffer();
+}
 console.log(
   'Container smoke passed: public routes, genuine404, headers, canonical/robots, media and expected build marker',
 );

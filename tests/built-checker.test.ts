@@ -55,6 +55,32 @@ test('escaped event-handler text and data attributes remain inert', () => {
   expect(inspectMarkup(root, file)).toEqual({ references: 0, failures: [] });
 });
 test.each([
+  '<img src="https://cdn.example/photo.jpg" alt=""/>',
+  '<img srcset="/photo.jpg 1x, https://cdn.example/photo.jpg 2x" alt=""/>',
+  '<link rel="stylesheet" href="http://cdn.example/site.css"/>',
+  '<link rel="preload" as="style" href="//cdn.example/site.css"/>',
+  '<video src="https://cdn.example/clip.mp4"></video>',
+  '<video poster="//cdn.example/poster.jpg"></video>',
+  '<audio><source src="https://cdn.example/audio.mp3"/></audio>',
+  '<picture><source srcset="https://cdn.example/photo.jpg 2x"/></picture>',
+  '<svg><use href="https://cdn.example/icons.svg#logo"/></svg>',
+  '<img src="https://toprealtorscypresstx.com/photo.jpg" alt=""/>',
+])('rejects network resources: %s', (html) => {
+  const { root, file } = fixture(html);
+  writeFileSync(join(root, 'photo.jpg'), 'image');
+  expect(inspectMarkup(root, file).failures.join(' ')).toContain(
+    'Prohibited URL scheme',
+  );
+});
+test('preserves external navigation, canonical metadata and permitted local/data assets', () => {
+  const { root, file } = fixture(
+    '<a href="https://example.com">Source</a><a href="http://example.com">Source</a><a href="//example.com">Source</a><a href="mailto:test@example.com">Email</a><a href="tel:+17135550100">Call</a><link rel="canonical" href="https://toprealtorscypresstx.com/"/><meta property="og:image" content="https://toprealtorscypresstx.com/photo.jpg"/><link rel="stylesheet" href="/site.css"/><img src="/photo.jpg" alt=""/><img src="data:image/png;base64,abcd" alt=""/><link rel="icon" href="data:image/svg+xml,icon"/>',
+  );
+  writeFileSync(join(root, 'site.css'), 'body{}');
+  writeFileSync(join(root, 'photo.jpg'), 'image');
+  expect(inspectMarkup(root, file)).toEqual({ references: 2, failures: [] });
+});
+test.each([
   'mailto:test@example.com',
   'tel:+17135550100',
   'data:image/png;base64,abcd',

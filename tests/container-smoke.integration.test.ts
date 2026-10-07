@@ -12,7 +12,9 @@ async function smoke(
   robots: string | null,
   decoy = false,
   canonical: 'valid' | 'missing' | 'wrong' | 'duplicate' = 'valid',
-  stallRoute?: string,
+  stalledRoute?: string,
+  stallBody = false,
+  redirectRoute?: string,
 ) {
   const root = mkdtempSync(join(tmpdir(), 'cypress-smoke-'));
   mkdirSync(join(root, 'src/content'), { recursive: true });
@@ -36,16 +38,30 @@ async function smoke(
     '/favicon.svg',
     '/assets/coles-crossing-morning-1320.jpg',
   ]);
+  let redirectedRequests = 0;
   const server = createServer((request, response) => {
     const route = request.url ?? '/';
-    if (route === stallRoute) {
-      response.writeHead(200);
-      response.write('incomplete body');
-      return;
-    }
     response.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Cache-Control', 'no-cache');
+    if (route === '/redirect-target') {
+      redirectedRequests++;
+      response.statusCode = 418;
+      response.end('Owned redirect destination');
+      return;
+    }
+    if (route === redirectRoute) {
+      response.statusCode = 302;
+      response.setHeader('Location', '/redirect-target');
+      response.end();
+      return;
+    }
+    if (route === stalledRoute) {
+      // Keep the response open to exercise the actual CLI's request timeout.
+      if (routes.has(route)) response.flushHeaders();
+      if (stallBody) response.write('incomplete body');
+      return;
+    }
     if (route === '/build.json') {
       response.end(
         JSON.stringify({
@@ -85,31 +101,41 @@ async function smoke(
     const address = server.address();
     if (!address || typeof address === 'string')
       throw new Error('Missing fixture port');
-    return await new Promise<{ code: number | null; output: string }>(
-      (done, reject) => {
-        const child = spawn(
-          process.execPath,
-          [
-            resolve('scripts/container-smoke.mjs'),
-            'http://127.0.0.1:' + address.port,
-          ],
-          {
-            cwd: root,
-            env: { ...process.env, EXPECTED_COMMIT: 'fixture' },
-            timeout: 10000,
-          },
-        );
-        let output = '';
-        child.stdout.on('data', (data) => {
-          output += data;
-        });
-        child.stderr.on('data', (data) => {
-          output += data;
-        });
-        child.on('error', reject);
-        child.on('close', (code) => done({ code, output }));
-      },
-    );
+    return await new Promise<{
+      code: number | null;
+      output: string;
+      killed: boolean;
+      redirectedRequests: number;
+    }>((done, reject) => {
+      const child = spawn(
+        process.execPath,
+        [
+          resolve('scripts/container-smoke.mjs'),
+          'http://127.0.0.1:' + address.port,
+        ],
+        {
+          cwd: root,
+          env: { ...process.env, EXPECTED_COMMIT: 'fixture' },
+        },
+      );
+      let output = '';
+      let killed = false;
+      const watchdog = setTimeout(() => {
+        killed = true;
+        child.kill('SIGKILL');
+      }, 6500);
+      child.stdout.on('data', (data) => {
+        output += data;
+      });
+      child.stderr.on('data', (data) => {
+        output += data;
+      });
+      child.on('error', reject);
+      child.on('close', (code) => {
+        clearTimeout(watchdog);
+        done({ code, output, killed, redirectedRequests });
+      });
+    });
   } finally {
     server.closeAllConnections();
     await new Promise<void>((done, reject) =>
@@ -144,18 +170,21 @@ test('actual smoke command requires robots metadata rather than a body substring
   const result = await smoke(false, null, true);
   expect(result.code, result.output).not.toBe(0);
 });
-test('actual smoke aborts a stalled marker body before the child deadline', async () => {
+
+test('actual smoke rejects redirects without requesting their destination', async () => {
   const result = await smoke(
     false,
     'noindex, follow',
     false,
     'valid',
-    '/build.json',
+    undefined,
+    false,
+    '/',
   );
-  expect(result.output).toMatch(/TimeoutError|AbortError/);
-  expect(result.code).not.toBeNull();
-  expect(result.code).not.toBe(0);
-}, 15000);
+  expect(result.killed, result.output).toBe(false);
+  expect(result.code, result.output).not.toBe(0);
+  expect(result.redirectedRequests).toBe(0);
+});
 test.each(['missing', 'wrong', 'duplicate'] as const)(
   'actual smoke rejects %s canonical links despite correct og:url metadata',
   async (canonical) => {
@@ -163,3 +192,43 @@ test.each(['missing', 'wrong', 'duplicate'] as const)(
     expect(result.code, result.output).not.toBe(0);
   },
 );
+
+test.each(['/', '/missing', '/build.json', '/favicon.svg'])(
+  'actual smoke aborts a stalled response from %s',
+  async (route) => {
+    const result = await smoke(false, 'noindex, follow', false, 'valid', route);
+    expect(result.killed, result.output).toBe(false);
+    expect(result.code, result.output).not.toBe(0);
+    expect(result.output).toMatch(/TimeoutError|timed out/);
+  },
+);
+
+test('actual smoke aborts a stalled marker body before the child deadline', async () => {
+  const result = await smoke(
+    false,
+    'noindex, follow',
+    false,
+    'valid',
+    '/build.json',
+    true,
+  );
+  expect(result.killed, result.output).toBe(false);
+  expect(result.output).toMatch(/TimeoutError|AbortError/);
+  expect(result.code).not.toBeNull();
+  expect(result.code).not.toBe(0);
+}, 15000);
+
+test('actual smoke aborts a stalled asset body after receiving successful headers', async () => {
+  const result = await smoke(
+    false,
+    'noindex, follow',
+    false,
+    'valid',
+    '/favicon.svg',
+    true,
+  );
+  expect(result.killed, result.output).toBe(false);
+  expect(result.output).toMatch(/TimeoutError|AbortError/);
+  expect(result.code).not.toBeNull();
+  expect(result.code).not.toBe(0);
+}, 15000);
