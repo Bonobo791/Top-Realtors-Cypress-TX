@@ -1,0 +1,408 @@
+---
+import Base from '../layouts/Base.astro';
+import Featured from '../components/Featured.astro';
+import AgentRow from '../components/AgentRow.astro';
+import { getDirectory, directorySchema } from '../lib/content';
+import { SPONSORED_SLUG } from '../lib/contracts';
+const { agents, ratings } = await getDirectory();
+const team = agents.find((agent) => agent.slug === SPONSORED_SLUG)!;
+---
+
+<Base
+  title={'Cypress TX Realtors & Sourced Profiles | Top Realtors Cypress TX'}
+  description={`Compare ${agents.length} Cypress-area real estate profiles, verified HAR survey ratings, official links and local community resources. Sponsored placements are labeled.`}
+  path="/"
+  schema={directorySchema(agents)}
+>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow">
+              Cypress, Texas · {agents.length} professional profiles
+            </span>
+            <h1>
+              Cypress realtors.
+              <br />
+              Find your <em>personal fit.</em>
+            </h1>
+            <p class="lede">
+              Get to know {agents.length} real estate professionals and teams
+              serving the Cypress area. Compare their public profiles, explore
+              local communities, and bring better questions to your first call.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-gold" href="#directory">
+                Explore the directory
+              </a>
+              <a class="text-link" href="#methodology">
+                How we use sources
+              </a>
+            </div>
+          </div>
+          <Featured agent={team} />
+        </div>
+        <figure class="hero-photo">
+          <img
+            src="/assets/coles-crossing-morning-1320.jpg"
+            srcset="/assets/coles-crossing-morning-660.jpg 660w, /assets/coles-crossing-morning-1320.jpg 1320w, /assets/coles-crossing-morning-2640.jpg 2640w"
+            sizes="(max-width: 800px) calc(100vw - 40px), (max-width: 1150px) calc(100vw - 64px), (max-width: 1416px) calc(100vw - 96px), 1320px"
+            alt="Morning sunlight through mature trees beside the road at the western entrance to Coles Crossing in Cypress, Texas"
+            width="4102"
+            height="2328"
+            fetchpriority="high"
+          />
+          <figcaption>
+            <span>Coles Crossing, Cypress · Archival photograph, May 2014</span>
+            <span>
+              <a
+                href="https://commons.wikimedia.org/wiki/File:May_Morning_-_Flickr_-_pinemikey.jpg"
+                target="_blank"
+                rel="noopener noreferrer"
+                class=""
+              >
+                Photo: Michael Martin
+              </a>{' '}
+              ·{' '}
+              <a
+                href="https://creativecommons.org/licenses/by-sa/2.0/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class=""
+              >
+                CC BY-SA 2.0
+              </a>{' '}
+              · Cropped for display
+            </span>
+          </figcaption>
+        </figure>
+        <div class="index-strip">
+          <div>
+            <b>{String(agents.length).padStart(2, '0')}</b>
+            <span>
+              Individual profiles
+              <br />
+              with original sources
+            </span>
+          </div>
+          <div>
+            <b>05</b>
+            <span>
+              Community resources
+              <br />
+              to explore locally
+            </span>
+          </div>
+          <div>
+            <b>01</b>
+            <span>
+              Clear starting point
+              <br />
+              for your own research
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="directory">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <span class="eyebrow">
+              The directory · Sponsored first, then alphabetical
+            </span>
+            <h2>
+              Different people.
+              <br />
+              Your <em>personal fit.</em>
+            </h2>
+          </div>
+          <p>
+            Open each profile for sourced details, official links, and public
+            business contacts. This is a starting point for interviews, not a
+            performance ranking.
+          </p>
+        </div>
+        {agents.map((agent) => (
+          <AgentRow agent={agent} rating={ratings[agent.slug]} />
+        ))}
+      </div>
+    </section>
+    <section class="section dark" id="methodology">
+      <div class="wrap">
+        <span class="eyebrow">Sources &amp; standards</span>
+        <h2>
+          A useful guide starts with
+          <br />
+          <em>being clear about the facts.</em>
+        </h2>
+        <div class="method-grid">
+          <article>
+            <span class="step">01 / TRACE THE SOURCE</span>
+            <h3>Show where it came from.</h3>
+            <p>
+              Each profile links to HAR and the professional’s own public pages.
+              Brokerage details and selected background statements are
+              attributed to those sources.
+            </p>
+          </article>
+          <article>
+            <span class="step">02 / LEAVE OUT THE GUESSWORK</span>
+            <h3>Keep claims in proportion.</h3>
+            <p>
+              Verified ratings show their source, survey count, subject and
+              check date. Unverified sales totals, awards and “best agent”
+              claims are omitted. A self-published biography is treated as a
+              biography, not an independent audit.
+            </p>
+          </article>
+          <article>
+            <span class="step">03 / CHECK WHAT MATTERS</span>
+            <h3>Confirm before you commit.</h3>
+            <p>
+              Public pages can change or lag behind reality. Check current
+              licensing, brokerage, services, fees, and availability with the
+              professional and relevant official sources.
+            </p>
+          </article>
+        </div>
+        <p class="method-note">
+          Reviewed October 3, 2026. No agent interviews, review audits,
+          address-level knowledge tests, or comparative scoring were performed.
+          Profiles are presented for your own research, without comparative
+          scoring or endorsement.
+        </p>
+      </div>
+    </section>
+    <section class="section" id="neighborhoods">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <span class="eyebrow">Five places to get oriented</span>
+            <h2>
+              Start with the <em>neighborhood.</em>
+            </h2>
+          </div>
+          <p>
+            Use these community and association websites to explore the details.
+            School assignments, taxes, and restrictions should be checked for a
+            specific property.
+          </p>
+        </div>
+        <div class="hood-grid">
+          <article class="hood-card">
+            <span class="eyebrow">Master-planned community</span>
+            <h3>Bridgeland</h3>
+            <p>
+              The developer describes an 11,500-acre community with lakes,
+              trails, and connected villages.
+            </p>
+            <a
+              href="https://www.bridgeland.com/community/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >
+              Official community guide
+            </a>
+          </article>
+          <article class="hood-card">
+            <span class="eyebrow">Lake-centered living</span>
+            <h3>Towne Lake</h3>
+            <p>
+              The community’s official site describes a 300-acre recreational
+              lake and connected trails and waterways.
+            </p>
+            <a
+              href="https://townelaketexas.com/lake"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >
+              Official lake guide
+            </a>
+          </article>
+          <article class="hood-card">
+            <span class="eyebrow">Community associations</span>
+            <h3>Fairfield</h3>
+            <p>
+              The Fairfield website links residents to the Village, Central,
+              Place, Village South, Lakes, and Trails association portals.
+            </p>
+            <a
+              href="https://www.fairfieldvillage.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >
+              Official association portals
+            </a>
+          </article>
+          <article class="hood-card">
+            <span class="eyebrow">Established in 1998</span>
+            <h3>Coles Crossing</h3>
+            <p>
+              The community association describes a master-planned neighborhood
+              off Highway 290 and Barker Cypress, with wooded recreational
+              areas.
+            </p>
+            <a
+              href="https://www.colescrossingcommunity.com/home/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >
+              Official community website
+            </a>
+          </article>
+          <article class="hood-card">
+            <span class="eyebrow">Local association information</span>
+            <h3>Cypress Creek Lakes</h3>
+            <p>
+              The property owners association provides community news, pool
+              information, and contacts for its different phases.
+            </p>
+            <a
+              href="https://cypresscreeklakeshoa.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-link"
+            >
+              Official association website
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        <span class="eyebrow">Before the first call</span>
+        <h2>
+          Bring questions that <em>matter to you.</em>
+        </h2>
+        <div class="question-grid">
+          <article class="question-box">
+            <span class="tag">If you’re selling</span>
+            <h3>
+              Get specific about
+              <br />
+              the plan for <em>your home.</em>
+            </h3>
+            <ul>
+              <li>
+                Which comparable sales would you use to discuss a list price?
+              </li>
+              <li>
+                What marketing, photography, and showing services are included?
+              </li>
+              <li>
+                How will we review buyer feedback and decide whether to adjust?
+              </li>
+            </ul>
+          </article>
+          <article class="question-box">
+            <span class="tag">If you’re buying</span>
+            <h3>
+              Understand the process
+              <br />
+              before you <em>fall in love.</em>
+            </h3>
+            <ul>
+              <li>
+                What experience do you have in the neighborhoods I’m
+                considering?
+              </li>
+              <li>
+                How will we check property-specific taxes, restrictions, and
+                other costs?
+              </li>
+              <li>
+                What should I understand about representation and compensation
+                before touring?
+              </li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section faq" id="faq">
+      <div class="wrap">
+        <span class="eyebrow">A few fair questions</span>
+        <h2>
+          Clear from the <em>start.</em>
+        </h2>
+        <div class="faq-list">
+          <details>
+            <summary>Is this a ranking of the best agents?</summary>
+            <p>
+              This is an editorial directory, not a performance ranking. The
+              Lippincott Team appears first as a sponsored listing; other
+              profiles are alphabetical. HAR client-survey ratings describe the
+              named agent and do not determine placement.
+            </p>
+          </details>
+          <details>
+            <summary>Is the featured placement sponsored?</summary>
+            <p>
+              Yes. The Lippincott Team pays the publisher to create this site.
+              Its paid placement is labeled “Sponsored listing” on the directory
+              and profile page.
+            </p>
+          </details>
+          <details>
+            <summary>What was actually checked?</summary>
+            <p>
+              Names, brokerage affiliations, business contacts, and selected
+              professional details were checked against the sources linked on
+              each page. Some details are self-reported by the agents. This is
+              not an audit of sales, reviews, reputation, or local knowledge.
+            </p>
+          </details>
+          <details>
+            <summary>How current is the information?</summary>
+            <p>
+              Public sources were reviewed on October 3, 2026. The site is a
+              fixed snapshot and does not update automatically. A linked source
+              can itself be outdated; confirm current affiliation, licensing,
+              services, and availability directly before relying on them.
+            </p>
+          </details>
+          <details>
+            <summary>Can I contact an agent here?</summary>
+            <p>
+              Each profile links to the professional’s public website and HAR
+              page. Where included, phone numbers are public business contacts
+              from those sources. This site does not collect or forward
+              inquiries; contact terms and any fees should be confirmed
+              directly.
+            </p>
+          </details>
+          <details id="privacy">
+            <summary>Does this site collect my contact details?</summary>
+            <p>
+              There are no inquiry forms, email signups, or lead-submission
+              features on this site. Outbound links open other sites, which have
+              their own privacy practices. The selected host may process routine
+              technical request information; this build makes no third-party
+              font or analytics request.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+    <section class="final">
+      <div class="wrap">
+        <div>
+          <h2>Find someone you’d like to talk to.</h2>
+          <p>
+            Read the profile. Check the sources. Make the conversation your own.
+          </p>
+        </div>
+        <a class="btn" href="#directory">
+          Browse all {agents.length} profiles
+        </a>
+      </div>
+    </section>
+  </main>
+</Base>

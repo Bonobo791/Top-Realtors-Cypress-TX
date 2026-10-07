@@ -1,0 +1,14 @@
+node_modules
+dist
+.astro
+docs/vendor
+src/content/realtors.json
+src/content/ratings.json
+public/assets
+package-lock.json
+reports
+.stryker-tmp
+test-results
+playwright-report
+docs/export-verification.md
+docs/pr1-triage.md

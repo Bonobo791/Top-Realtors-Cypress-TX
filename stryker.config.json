@@ -1,0 +1,12 @@
+{
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.mutation.config.ts",
+    "related": false
+  },
+  "mutate": ["src/lib/contracts.ts"],
+  "reporters": ["clear-text", "json"],
+  "concurrency": 2,
+  "timeoutMS": 10000,
+  "coverageAnalysis": "perTest"
+}

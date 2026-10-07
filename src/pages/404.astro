@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { getDirectory } from '../lib/content';
+const { agents } = await getDirectory();
+---
+
+<Base
+  title="Page not found | Top Realtors Cypress TX"
+  description="Return to the Cypress realtor directory."
+  path="/404.html"
+>
+  <main id="main" class="wrap notfound">
+    <h1>That page isn’t in the guide.</h1>
+    <p>Find all {agents.length} profiles on the directory page.</p>
+    <a class="btn btn-gold" href="/">
+      Return to the guide
+    </a>
+  </main>
+</Base>

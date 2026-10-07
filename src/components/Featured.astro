@@ -1,0 +1,30 @@
+---
+import type { Agent } from '../lib/contracts';
+import { profilePath } from '../lib/contracts';
+import ExternalLink from './ExternalLink.astro';
+interface Props {
+  agent: Agent;
+}
+const { agent } = Astro.props;
+---
+
+<aside class="feature-card">
+  <span class="sponsored-badge">Sponsored listing</span>
+  <div class="identity">
+    <div class="monogram" aria-hidden="true">
+      {agent.initials}
+    </div>
+    <div>
+      <h2>{agent.name}</h2>
+      <div class="brokerage">{agent.brokerage}</div>
+    </div>
+  </div>
+  <p>{agent.short}</p>
+  <a class="btn btn-gold" href={profilePath(agent)}>
+    Meet the team
+  </a>
+  <p class="note">
+    Paid placement · {agent.brokerage}.{' '}
+    <ExternalLink href={agent.har}>View the source profile</ExternalLink>.
+  </p>
+</aside>

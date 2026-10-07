@@ -1,0 +1,39 @@
+---
+import type { Agent, Rating } from '../lib/contracts';
+import ExternalLink from './ExternalLink.astro';
+interface Props {
+  agent: Agent;
+  rating?: Rating;
+}
+const { agent, rating } = Astro.props;
+---
+
+<div class="rating-panel">
+  {rating ? (
+    <>
+      <span class="eyebrow">HAR client feedback · {rating.subject}</span>
+      <p>
+        <strong class="rating-score">{rating.value} / 5</strong>{' '}
+        <span>
+          {rating.count} {rating.count_type}
+        </span>
+      </p>
+      <p class="note">
+        <ExternalLink href={rating.source}>{rating.platform}</ExternalLink> ·
+        Checked <time datetime={rating.checked}>{rating.checked}</time>
+        <br />
+        {rating.scope}. Placement is separate from ratings.
+      </p>
+    </>
+  ) : (
+    <>
+      <span class="eyebrow">Client feedback</span>
+      <p>
+        No verified aggregate in this snapshot.{' '}
+        <ExternalLink href={agent.har}>
+          View the current HAR profile
+        </ExternalLink>
+      </p>
+    </>
+  )}
+</div>

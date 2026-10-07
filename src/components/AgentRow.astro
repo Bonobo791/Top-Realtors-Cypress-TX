@@ -1,0 +1,42 @@
+---
+import type { Agent, Rating } from '../lib/contracts';
+import { SPONSORED_SLUG, profilePath } from '../lib/contracts';
+import ExternalLink from './ExternalLink.astro';
+import RatingPanel from './Rating.astro';
+interface Props {
+  agent: Agent;
+  rating?: Rating;
+}
+const { agent, rating } = Astro.props;
+---
+
+<article class="agent-row" data-profile={agent.slug}>
+  <div class="monogram" aria-hidden="true">
+    {agent.initials}
+  </div>
+  <div>
+    {agent.slug === SPONSORED_SLUG && (
+      <span class="sponsored-badge">Sponsored listing</span>
+    )}
+    <h3>
+      <a href={profilePath(agent)} style="text-decoration:none">
+        {agent.name}
+      </a>
+    </h3>
+    <div class="brokerage">{agent.brokerage}</div>
+    <ExternalLink href={agent.har} class="text-link">
+      Source: HAR profile
+    </ExternalLink>
+  </div>
+  <div>
+    <p>{agent.short}</p>
+    <RatingPanel agent={agent} rating={rating} />
+  </div>
+  <a
+    class="btn"
+    href={profilePath(agent)}
+    aria-label={`View ${agent.name} profile`}
+  >
+    View profile
+  </a>
+</article>

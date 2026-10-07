@@ -1,0 +1,112 @@
+---
+import '../styles/site.css';
+import { site } from '../lib/content';
+import { canonical, jsonLd, FACTS_CHECKED } from '../lib/contracts';
+import ExternalLink from '../components/ExternalLink.astro';
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  schema?: unknown;
+}
+const { title, description, path, schema } = Astro.props;
+const address = canonical(path);
+const robots =
+  site.indexing && path != '/404.html' ? 'index, follow' : 'noindex, follow';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={address} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={address} />
+    <meta
+      property="og:image"
+      content={`${site.origin}/assets/coles-crossing-morning-1320.jpg`}
+    />
+    <meta
+      property="og:image:alt"
+      content="Morning light in Coles Crossing, Cypress, Texas"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {schema && <script type="application/ld+json" set:html={jsonLd(schema)} />}
+  </head>
+  <body>
+    <a class="skip" href="#main">
+      Skip to content
+    </a>
+    <div class="demo-bar">
+      <span>CYPRESS, TEXAS</span> · Sourced profiles · Sponsored placements
+      labeled
+    </div>
+    <header>
+      <div class="wrap header-in">
+        <a class="brand" href="/">
+          <span class="mark" aria-hidden="true">
+            C
+          </span>
+          <span>
+            Top Realtors<small>Cypress, Texas</small>
+          </span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="/#directory">The directory</a>
+          <a href="/#methodology">Our sources</a>
+          <a href="/#neighborhoods">Neighborhoods</a>
+          <a href="/#faq">FAQ</a>
+        </nav>
+        <a class="btn btn-gold" href="/#directory">
+          Find a profile
+        </a>
+      </div>
+    </header>
+    <slot />
+    <footer>
+      <div class="wrap">
+        <div class="footer-top">
+          <div>
+            <a class="brand" href="/">
+              Top Realtors Cypress TX
+            </a>
+            <p>
+              An editorial directory. Sponsored placements are labeled; other
+              profiles appear alphabetically. Third-party ratings do not
+              determine placement. Contact each professional directly.
+            </p>
+          </div>
+          <div class="footer-nav">
+            <a href="/#directory">All profiles</a>
+            <a href="/#methodology">Sources &amp; standards</a>
+            <a href="/terms.html">Terms</a>
+            <a href="/privacy.html">Privacy</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>
+            Profile sources reviewed {FACTS_CHECKED} · Ratings carry their own
+            check dates
+          </span>
+          <span>Confirm current details with the professional.</span>
+        </div>
+        <div class="regulatory-links">
+          <ExternalLink href="https://content.harstatic.com/pdf/TREC_CPN.pdf">
+            TREC Consumer Protection Notice
+          </ExternalLink>{' '}
+          ·{' '}
+          <ExternalLink href="https://www.har.com/amy-lippincott/agent_alippi?contact=1">
+            Lippincott: brokerage &amp; contact details on HAR
+          </ExternalLink>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+---
+import type { GetStaticPaths } from 'astro';
+import type { Agent, Rating } from '../../lib/contracts';
+import {
+  FACTS_CHECKED,
+  SPONSORED_SLUG,
+  profilePath,
+} from '../../lib/contracts';
+import { getDirectory, profileSchema } from '../../lib/content';
+import Base from '../../layouts/Base.astro';
+import ExternalLink from '../../components/ExternalLink.astro';
+import RatingPanel from '../../components/Rating.astro';
+export const getStaticPaths = (async () => {
+  const { agents, ratings } = await getDirectory();
+  return agents.map((agent) => ({
+    params: { slug: agent.slug },
+    props: {
+      agent,
+      rating: ratings[agent.slug],
+      related: agents.filter((a) => a.slug !== agent.slug),
+    },
+  }));
+}) satisfies GetStaticPaths;
+interface Props {
+  agent: Agent;
+  rating?: Rating;
+  related: Agent[];
+}
+const { agent, rating, related } = Astro.props;
+const licenseNote = agent.license
+  ? 'License numbers on this page are attributed to HAR, not a live TREC status check. '
+  : '';
+---
+
+<Base
+  title={`${agent.name} | Top Realtors Cypress TX`}
+  description={agent.intro}
+  path={profilePath(agent)}
+  schema={profileSchema(agent)}
+>
+  <main id="main">
+    <section class="profile-hero">
+      <div class="wrap">
+        <div class="breadcrumb">
+          <a href="/">Home</a> / <a href="/#directory">Directory</a> /{' '}
+          {agent.name}
+        </div>
+        <div class="profile-grid">
+          <div>
+            {agent.slug === SPONSORED_SLUG && (
+              <span class="sponsored-badge">Sponsored listing</span>
+            )}
+            <span class="eyebrow">{agent.type} · Public-source profile</span>
+            <h1>{agent.name}</h1>
+            <div class="brokerage">{agent.brokerage}</div>
+            <p class="lede">{agent.intro}</p>
+            <div class="hero-actions">
+              <ExternalLink
+                href={agent.official}
+                class="btn btn-gold"
+                paid={agent.slug === SPONSORED_SLUG}
+              >
+                {agent.official_label ?? 'Visit official website'}
+              </ExternalLink>
+              <ExternalLink href={agent.har} class="text-link">
+                View HAR profile
+              </ExternalLink>
+            </div>
+            <p class="notice">
+              This editorial profile is separate from the official website for{' '}
+              {agent.name}. Use the linked professional pages for current
+              services, availability, and contact details.
+            </p>
+          </div>
+          <aside class="profile-aside" aria-label="Professional details">
+            <div class="monogram" aria-hidden="true">
+              {agent.initials}
+            </div>
+            <span class="eyebrow">At a glance</span>
+            <dl>
+              <div>
+                <dt>Brokerage shown by public sources</dt>
+                <dd>{agent.brokerage}</dd>
+              </div>
+              <div>
+                <dt>Profile type</dt>
+                <dd>{agent.type}</dd>
+              </div>
+              {agent.license && (
+                <div>
+                  <dt>License number listed by HAR</dt>
+                  <dd>{agent.license}</dd>
+                </div>
+              )}
+              {agent.phone && (
+                <div>
+                  <dt>Public business phone</dt>
+                  <dd>
+                    <a href={`tel:${agent.tel}`}>{agent.phone}</a>
+                  </dd>
+                </div>
+              )}
+            </dl>
+            <ExternalLink href={agent.har} class="btn btn-light">
+              Check current public profile
+            </ExternalLink>
+            <p class="note">
+              {licenseNote}Sources reviewed {FACTS_CHECKED}.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="wrap">
+        <RatingPanel agent={agent} rating={rating} />
+      </div>
+      <div class="wrap profile-content">
+        <div>
+          <span class="eyebrow">A closer look</span>
+          <h2>
+            What the sources <em>say.</em>
+          </h2>
+          <ul class="fact-list">
+            {agent.facts.map((fact) => (
+              <li>
+                {fact.text}
+                <small>
+                  Source:{' '}
+                  <ExternalLink href={agent.sources[fact.source].url}>
+                    {agent.sources[fact.source].label}
+                  </ExternalLink>
+                </small>
+              </li>
+            ))}
+          </ul>
+          <div class="profile-questions">
+            <h3>Make your first conversation count.</h3>
+            <ul>
+              <li>
+                What recent experience can you share with homes like mine in my
+                target neighborhood?
+              </li>
+              <li>
+                Who would be my day-to-day contact, and how do you handle
+                updates?
+              </li>
+              <li>
+                What services, fees, and representation terms would apply to my
+                situation?
+              </li>
+            </ul>
+          </div>
+        </div>
+        <aside class="sources">
+          <h2>Sources &amp; context</h2>
+          <ol>
+            {agent.sources.map((source) => (
+              <li>
+                <ExternalLink href={source.url}>{source.label}</ExternalLink>
+                <br />
+                <span class="note">{source.supports}</span>
+              </li>
+            ))}
+          </ol>
+          <p>
+            These are public professional profiles and self-published business
+            pages, not independently audited performance records. Verified HAR
+            survey aggregates are labeled separately. No independent performance
+            ranking or team-wide rating is asserted.
+          </p>
+          <p>
+            Checked {FACTS_CHECKED}. {licenseNote}For current licensing
+            information, use{' '}
+            <ExternalLink href="https://www.trec.texas.gov/license-search/">
+              TREC’s License Holder Search
+            </ExternalLink>
+            .
+          </p>
+        </aside>
+      </div>
+    </section>
+    <section class="section" style="padding-top:0">
+      <div class="wrap">
+        <span class="eyebrow">Keep exploring</span>
+        <h2>
+          Meet the other <em>professionals.</em>
+        </h2>
+        <div class="more-links">
+          {related.map((other) => (
+            <a href={profilePath(other)}>{other.name}</a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+</Base>

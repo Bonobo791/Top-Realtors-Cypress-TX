@@ -1,0 +1,77 @@
+name: Astro verification
+on:
+  push:
+    branches: [main, 'build/**']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm install --global npm@11.9.0 && npm ci
+      - run: npm run verify
+        env:
+          BUILD_COMMIT: ${{ github.sha }}
+      - run: npm run test:mutation
+      - run: npx playwright install --with-deps chromium
+      - run: docker build --build-arg SOURCE_COMMIT="$GITHUB_SHA" -t cypress-astro:ci .
+      - name: Serve the selected runtime
+        run: >-
+          docker run -d --name cypress-astro-ci --read-only
+          --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL
+          --security-opt no-new-privileges -p 127.0.0.1:8082:8080 cypress-astro:ci
+      - run: node scripts/container-smoke.mjs http://127.0.0.1:8082
+        env:
+          EXPECTED_COMMIT: ${{ github.sha }}
+      - run: npm run test:e2e
+        env:
+          E2E_BASE_URL: http://127.0.0.1:8082
+      - name: Verify Docker health and unprivileged runtime
+        run: |
+          for attempt in $(seq 1 15); do
+            test "$(docker inspect --format '{{.State.Health.Status}}' cypress-astro-ci)" = healthy && break
+            sleep 2
+          done
+          test "$(docker inspect --format '{{.State.Health.Status}}' cypress-astro-ci)" = healthy
+          test "$(docker exec cypress-astro-ci id -u)" = 101
+          docker exec cypress-astro-ci nginx -t
+      - name: Reject an image with missing static content
+        run: |
+          mkdir -p /tmp/cypress-empty-webroot
+          chmod 755 /tmp/cypress-empty-webroot
+          docker run -d --name cypress-astro-ci-negative --read-only \
+            --tmpfs /tmp:rw,noexec,nosuid,size=16m --cap-drop ALL --security-opt no-new-privileges \
+            --health-interval=1s --health-start-period=0s --health-start-interval=1s --health-retries=1 \
+            -v /tmp/cypress-empty-webroot:/usr/share/nginx/html:ro -p 127.0.0.1:8083:8080 cypress-astro:ci
+          for attempt in $(seq 1 15); do
+            test "$(docker inspect --format '{{.State.Health.Status}}' cypress-astro-ci-negative)" = unhealthy && break
+            sleep 1
+          done
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8083/healthz)" = 503
+          test "$(docker inspect --format '{{.State.Health.Status}}' cypress-astro-ci-negative)" = unhealthy
+      - name: Capture runtime evidence
+        if: always()
+        run: |
+          mkdir -p reports/container
+          docker inspect cypress-astro-ci > reports/container/inspect.json || true
+          docker logs cypress-astro-ci > reports/container/log.txt 2>&1 || true
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: astro-verification
+          path: |
+            reports/
+            test-results/
+          retention-days: 7
+      - name: Remove disposable serving container
+        if: always()
+        run: |
+          docker stop --time 30 cypress-astro-ci || true
+          docker rm -f cypress-astro-ci cypress-astro-ci-negative || true
