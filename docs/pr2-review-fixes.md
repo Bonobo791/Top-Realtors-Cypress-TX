@@ -1,8 +1,8 @@
 # PR #2 review fixes
 
-This record covers the 18 unresolved review threads visible in the latest refresh of [PR #2](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/2), plus the consolidated CodeAnt suggestions and nitpicks. Work starts from `e8efae89ede4e5cb319f7d3ccf7a79b748461ad0` in the isolated `fix/pr2-review` checkout. The PR advanced to `8d36922f07d982c17c4223eaf5f32c1cb9b17798` during verification; its output fixes, regression tests and complexity refactor are preserved in the combined result. Thread status describes the review inventory, not whether the requested behavior still needs a fix.
+This record covers the 18 review threads unresolved at the initial refresh of [PR #2](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/2), plus the consolidated CodeAnt suggestions and nitpicks. Work starts from `e8efae89ede4e5cb319f7d3ccf7a79b748461ad0` in the isolated `fix/pr2-review` checkout. The PR advanced to `8d36922f07d982c17c4223eaf5f32c1cb9b17798` during verification; its output fixes, regression tests and complexity refactor are preserved in the combined result. Thread status describes the review inventory, not whether the requested behavior still needs a fix.
 
-The user authorized triage and valid fixes. Verified changes target the existing PR branch. Threads remain open; no reviewer communications, thread resolutions, merge or deployment are part of this work. Source content, public assets and Nginx configuration remain unchanged.
+The user authorized triage and valid fixes. PR #2 was independently merged at 13:06 UTC during verification. The remaining fixes are submitted in [draft PR #3](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/3). Other work resolved ten of the original threads; the remaining eight are covered by this disposition record. This review sent no reviewer messages, resolved no threads and performed no merge or deployment. Source content, public assets and Nginx configuration remain unchanged.
 
 ## Unresolved thread dispositions
 
