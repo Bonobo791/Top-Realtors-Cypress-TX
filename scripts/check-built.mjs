@@ -133,7 +133,9 @@ assert(lippincott('.notice').text().includes('Paid placement.'));
 const sponsorshipFaq = home('#faq details').eq(1).find('p').text();
 assert(sponsorshipFaq.includes('Paid placement · eXp Realty LLC.'));
 assert(sponsorshipFaq.includes('profile page says “Paid placement.”'));
-assert(sponsorshipFaq.includes('directory row is labeled “Sponsored listing.”'));
+assert(
+  sponsorshipFaq.includes('directory row is labeled “Sponsored listing.”'),
+);
 assert(
   lippincott('.hero-actions a')
     .first()
