@@ -18,7 +18,8 @@ for (let attempt = 0; attempt < 50; attempt++) {
       signal: AbortSignal.timeout(2000),
     });
   } catch (error) {
-    if (attempt === 49) throw error;
+    if (attempt === 49)
+      throw new Error('Serving readiness failed', { cause: error });
     await setTimeout(200);
     continue;
   }
@@ -26,7 +27,7 @@ for (let attempt = 0; attempt < 50; attempt++) {
   break;
 }
 for (const route of routes) {
-  const r = await fetch(base + route);
+  const r = await fetch(base + route, { signal: AbortSignal.timeout(5000) });
   assert.equal(r.status, 200, route);
   const html = await r.text();
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
@@ -59,7 +60,7 @@ for (const route of [
   '/50x.html',
   '/404.html',
 ]) {
-  const r = await fetch(base + route);
+  const r = await fetch(base + route, { signal: AbortSignal.timeout(5000) });
   assert.equal(r.status, 404, route);
   const html = await r.text();
   assert(html.includes('That page isn’t in the guide.'));
@@ -69,7 +70,9 @@ for (const route of [
   );
   assert(r.headers.get('content-security-policy').includes('frame-ancestors'));
 }
-const marker = await (await fetch(base + '/build.json')).json();
+const marker = await (
+  await fetch(base + '/build.json', { signal: AbortSignal.timeout(5000) })
+).json();
 assert.equal(marker.framework, 'Astro');
 assert.equal(marker.origin, 'https://toprealtorscypresstx.com');
 if (process.env.EXPECTED_COMMIT)
@@ -80,7 +83,11 @@ for (const route of [
   '/favicon.svg',
   '/assets/coles-crossing-morning-1320.jpg',
 ])
-  assert.equal((await fetch(base + route)).status, 200, route);
+  assert.equal(
+    (await fetch(base + route, { signal: AbortSignal.timeout(5000) })).status,
+    200,
+    route,
+  );
 console.log(
   'Container smoke passed: public routes, genuine404, headers, canonical/robots, media and expected build marker',
 );

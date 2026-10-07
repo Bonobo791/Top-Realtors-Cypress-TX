@@ -12,6 +12,7 @@ async function smoke(
   robots: string | null,
   decoy = false,
   canonical: 'valid' | 'missing' | 'wrong' | 'duplicate' = 'valid',
+  stallRoute?: string,
 ) {
   const root = mkdtempSync(join(tmpdir(), 'cypress-smoke-'));
   mkdirSync(join(root, 'src/content'), { recursive: true });
@@ -37,6 +38,11 @@ async function smoke(
   ]);
   const server = createServer((request, response) => {
     const route = request.url ?? '/';
+    if (route === stallRoute) {
+      response.writeHead(200);
+      response.write('incomplete body');
+      return;
+    }
     response.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Cache-Control', 'no-cache');
@@ -90,6 +96,7 @@ async function smoke(
           {
             cwd: root,
             env: { ...process.env, EXPECTED_COMMIT: 'fixture' },
+            timeout: 10000,
           },
         );
         let output = '';
@@ -104,6 +111,7 @@ async function smoke(
       },
     );
   } finally {
+    server.closeAllConnections();
     await new Promise<void>((done, reject) =>
       server.close((error) => (error ? reject(error) : done())),
     );
@@ -136,6 +144,18 @@ test('actual smoke command requires robots metadata rather than a body substring
   const result = await smoke(false, null, true);
   expect(result.code, result.output).not.toBe(0);
 });
+test('actual smoke aborts a stalled marker body before the child deadline', async () => {
+  const result = await smoke(
+    false,
+    'noindex, follow',
+    false,
+    'valid',
+    '/build.json',
+  );
+  expect(result.output).toMatch(/TimeoutError|AbortError/);
+  expect(result.code).not.toBeNull();
+  expect(result.code).not.toBe(0);
+}, 15000);
 test.each(['missing', 'wrong', 'duplicate'] as const)(
   'actual smoke rejects %s canonical links despite correct og:url metadata',
   async (canonical) => {

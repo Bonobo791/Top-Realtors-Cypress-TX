@@ -1,5 +1,7 @@
 # PR2 triage
 
+This historical record describes the first triage pass. Its fixes were subsequently published in `2c8ac1f`; current verification totals are in [Astro verification](verification.md), and the next review pass is in [PR2 follow-up](pr2-follow-up.md). Local/publication statements below describe the state when this record was written.
+
 Reviewed [draft PR2](https://github.com/Bonobo791/Top-Realtors-Cypress-TX/pull/2) at published head `a126365d55e1f6c32e6ec2eae9c2f0dc368bfafd`. The local branch retains `d46a004`, which fixed the three user-supplied quality rules. This follow-up remains local; no PR replies, review resolutions, push, merge or deployment are included.
 
 ## Findings and dispositions

@@ -8,6 +8,7 @@ import {
   rmSync,
   existsSync,
   mkdirSync,
+  readdirSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -202,6 +203,96 @@ test('browser test inventory omits a draft profile and retains published routes'
   } finally {
     writeFileSync(file, original);
   }
+}, 30000);
+test('actual checker rejects duplicate sitemap entries and symlinked required pages', () => {
+  const result = build();
+  expect(result.status, result.stdout + result.stderr).toBe(0);
+  const check = () =>
+    spawnSync('node', ['scripts/check-built.mjs'], {
+      cwd: root,
+      encoding: 'utf8',
+      timeout: 10000,
+    });
+  const sitemapFile = join(root, 'dist/sitemap.xml');
+  const sitemap = readFileSync(sitemapFile, 'utf8');
+  const $ = load(sitemap, { xml: true });
+  writeFileSync(
+    sitemapFile,
+    sitemap.replace(
+      '</urlset>',
+      '<url><loc>' + $('loc').first().text() + '</loc></url></urlset>',
+    ),
+  );
+  const duplicate = check();
+  writeFileSync(sitemapFile, sitemap);
+  const page = join(root, 'dist/404.html');
+  const html = readFileSync(page, 'utf8');
+  const outside = join(root, 'outside-404.html');
+  const linkedHtml = html.replace('href="#main"', 'href="/"');
+  expect(linkedHtml).not.toBe(html);
+  writeFileSync(outside, linkedHtml);
+  rmSync(page);
+  symlinkSync(outside, page);
+  let linked;
+  try {
+    linked = check();
+  } finally {
+    rmSync(page);
+    writeFileSync(page, html);
+    rmSync(outside);
+  }
+  const profileDir = join(root, 'dist/realtors');
+  const outsideProfiles = join(root, 'outside-required-profiles');
+  cpSync(profileDir, outsideProfiles, { recursive: true });
+  const profileCopies = new Map(
+    readdirSync(outsideProfiles).map((name) => [
+      name,
+      readFileSync(join(outsideProfiles, name), 'utf8'),
+    ]),
+  );
+  for (const [name, markup] of profileCopies)
+    writeFileSync(
+      join(outsideProfiles, name),
+      markup
+        .replace(/href="#[^"]*"/g, 'href="/"')
+        .replaceAll(
+          'href="/realtors/',
+          'href="https://toprealtorscypresstx.com/realtors/',
+        ),
+    );
+  const homeFile = join(root, 'dist/index.html');
+  const home = readFileSync(homeFile, 'utf8');
+  writeFileSync(
+    homeFile,
+    home.replaceAll(
+      'href="/realtors/',
+      'href="https://toprealtorscypresstx.com/realtors/',
+    ),
+  );
+  rmSync(profileDir, { recursive: true });
+  symlinkSync(outsideProfiles, profileDir, 'dir');
+  let linkedParent;
+  try {
+    linkedParent = check();
+  } finally {
+    rmSync(profileDir);
+    for (const [name, markup] of profileCopies)
+      writeFileSync(join(outsideProfiles, name), markup);
+    cpSync(outsideProfiles, profileDir, { recursive: true });
+    rmSync(outsideProfiles, { recursive: true });
+    writeFileSync(homeFile, home);
+  }
+  expect({
+    duplicateRejected: duplicate.status !== 0,
+    symlinkRejected: linked.status !== 0,
+    parentSymlinkRejected: linkedParent.status !== 0,
+  }).toEqual({
+    duplicateRejected: true,
+    symlinkRejected: true,
+    parentSymlinkRejected: true,
+  });
+  const restored = check();
+  expect(restored.status, restored.stdout + restored.stderr).toBe(0);
 }, 30000);
 test('actual indexing-enabled build emits index metadata while404 remains noindex', () => {
   const file = join(root, 'src/content/site.json');

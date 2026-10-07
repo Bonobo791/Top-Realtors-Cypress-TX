@@ -26,6 +26,6 @@ Selected host: Node builds dist/; pinned unprivileged Nginx serves it on8080. Co
 | D05,D07,D08     | Live DNS/TLS, CI, approved served SHA and host rollback pending release authorization      |
 | D06             | Isolated edit/invalid state/restoration rebuild; no external store/database                |
 
-Run at the repository root: npm ci, npm run verify, npm run test:mutation, then the selected container and npm run test:e2e against it. verification.md records actual outcomes/counts/failures. dist is generated and ignored. A release marker must use its approved committed Astro SHA; pre-commit images use local.
+Run at the repository root: npm ci, npm run verify, npm run test:mutation, then start the selected container using [the local runtime commands](coolify.md) and run E2E_BASE_URL=http://127.0.0.1:8082 npm run test:e2e. verification.md records actual outcomes/counts/failures. dist is generated and ignored. A release marker must use its approved committed Astro SHA; pre-commit images use local.
 
 The local foundation supports content/component work. Approved publication, real CI, DNS/TLS, host logs/indexing and rollback remain separate gates owned by the repository/host operator.

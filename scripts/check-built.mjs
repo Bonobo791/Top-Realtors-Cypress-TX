@@ -18,6 +18,7 @@ assert(
   !fs.lstatSync(root).isSymbolicLink(),
   'Build root must not be a symlink',
 );
+const realRoot = fs.realpathSync(root);
 const read = (name) =>
   JSON.parse(fs.readFileSync('src/content/' + name + '.json', 'utf8'));
 const site = parseSite(read('site'));
@@ -30,7 +31,15 @@ const titles = new Set();
 const descriptions = new Set();
 for (const route of routes) {
   const file = path.join(root, route === '/' ? 'index.html' : route.slice(1));
-  assert(fs.existsSync(file), 'Required public file ' + route);
+  assert(
+    fs.existsSync(file) && fs.lstatSync(file).isFile(),
+    'Required regular public file ' + route,
+  );
+  assert.equal(
+    fs.realpathSync(file),
+    path.join(realRoot, route === '/' ? 'index.html' : route.slice(1)),
+    'Required public path contains a symlink: ' + route,
+  );
   const markup = fs.readFileSync(file, 'utf8');
   const $ = load(markup);
   assert.equal($('h1').length, 1);
@@ -125,12 +134,11 @@ const sitemap = load(fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8'), {
   xml: true,
 });
 assert.deepEqual(
-  new Set(
-    sitemap('loc')
-      .toArray()
-      .map((el) => sitemap(el).text()),
-  ),
-  new Set(publicPaths(agents).map(canonical)),
+  sitemap('loc')
+    .toArray()
+    .map((el) => sitemap(el).text())
+    .sort(),
+  publicPaths(agents).map(canonical).sort(),
 );
 assert(
   fs

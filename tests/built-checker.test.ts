@@ -23,6 +23,21 @@ afterEach(() =>
     .forEach((dir) => rmSync(dir, { recursive: true, force: true })),
 );
 test.each([
+  '<img src="https://remote.example/photo.jpg" alt=""/>',
+  '<img srcset="//remote.example/photo.jpg 2x" alt=""/>',
+  '<link rel="stylesheet" href="https://remote.example/site.css"/>',
+  '<video poster="https://remote.example/poster.jpg"></video>',
+])('rejects remote resources forbidden by the served CSP: %s', (html) => {
+  const { root, file } = fixture(html);
+  expect(inspectMarkup(root, file).failures).not.toEqual([]);
+});
+test('remote navigation, canonical metadata and inert inline images remain allowed', () => {
+  const { root, file } = fixture(
+    '<a href="https://official.example/">Official</a><a href="mailto:agent@example.com">Email</a><a href="tel:+17135550100">Call</a><link rel="canonical" href="https://toprealtorscypresstx.com/"><img src="data:image/png;base64,abcd" alt=""/>',
+  );
+  expect(inspectMarkup(root, file).failures).toEqual([]);
+});
+test.each([
   '<body onload="alert(1)"><main>Page</main></body>',
   '<button onclick="alert(1)">Click</button>',
   '<img OnErRoR="alert(1)" alt=""/>',

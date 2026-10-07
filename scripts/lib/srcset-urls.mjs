@@ -1,4 +1,14 @@
 // Extract URL tokens using the HTML srcset URL/descriptor boundaries.
+function skipDescriptors(input, position) {
+  let inParens = false;
+  while (position < input.length) {
+    const character = input[position++];
+    if (character === '(') inParens = true;
+    else if (character === ')') inParens = false;
+    else if (character === ',' && !inParens) break;
+  }
+  return position;
+}
 export function srcsetUrls(input) {
   const urls = [];
   let position = 0;
@@ -12,13 +22,7 @@ export function srcsetUrls(input) {
     const url = input.slice(start, position);
     urls.push(url.replace(/,+$/, ''));
     if (url.endsWith(',')) continue;
-    let inParens = false;
-    while (position < input.length) {
-      const character = input[position++];
-      if (character === '(') inParens = true;
-      else if (character === ')') inParens = false;
-      else if (character === ',' && !inParens) break;
-    }
+    position = skipDescriptors(input, position);
   }
   return urls;
 }
