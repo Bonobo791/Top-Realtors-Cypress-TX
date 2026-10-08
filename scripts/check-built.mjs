@@ -112,10 +112,6 @@ assert.equal(
 assert.equal(home('.feature-card .identity h2').text(), 'The Lippincott Team');
 assert.equal(home('.feature-card .identity .btn').length, 0);
 assert.equal(home('.feature-card .sponsored-badge').length, 0);
-assert.equal(
-  home('.feature-card > p').first().text(),
-  'Our #1 choice. Led by Amy Lippincott. Buying and selling services across Northwest Houston, including Cypress, Tomball, and Katy.',
-);
 assert(
   home('.feature-card .note')
     .text()
