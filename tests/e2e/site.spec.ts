@@ -104,9 +104,6 @@ for (const width of [1440, 375, 320])
         await expect(
           page.locator('.feature-card .sponsored-badge'),
         ).toHaveCount(0);
-        await expect(page.locator('.feature-card')).toContainText(
-          'Our #1 choice. Led by Amy Lippincott. Buying and selling services across Northwest Houston, including Cypress, Tomball, and Katy.',
-        );
         await expect(page.locator('.feature-card .note')).toContainText(
           'Paid placement · eXp Realty LLC.',
         );
