@@ -21,9 +21,9 @@ The research window was April 6–October 6, 2026. Search-tool results for the r
 | Cypress neighborhood orientation                    | home community section             | five official resource links                                                   | preserved sourced snapshot                      |
 | Listings/IDX, licensing status, representation fees | outbound professional/TREC sources | reader checks current facts directly                                           | excluded onsite functionality                   |
 
-Title: Cypress TX Realtors & Sourced Profiles | Top Realtors Cypress TX.
-H1: Cypress realtors. Find your personal fit.
-Sections: intro and sponsored card, original local photograph, seven-entry directory, sources/method, five community resources, buying/selling interview prompts, FAQ and next step. Terms/Privacy explain relationship and outbound-site boundaries.
+Title: Cypress TX Realtors Reviews | Top Realtors Cypress TX.
+H1: Compare Cypress, TX realtors. Find your personal fit.
+Sections: hero and original local photograph, seven-entry directory introduction, sponsored feature card followed by the full directory, sources/method, five community resources, buying/selling interview prompts, FAQ and next step. The sponsored feature card appears below the hero; Terms/Privacy explain relationship and outbound-site boundaries.
 Entity/evidence map: each agent/team -> public brokerage, contacts and cited facts; rating -> named individual, HAR, completed survey count, date and scope; placement -> paid publisher relationship. Schema describes the visible directory and profile entities, without fabricated aggregate-rating/ranking data.
 
 ## Local identity and access
