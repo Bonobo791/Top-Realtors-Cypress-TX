@@ -300,6 +300,10 @@ h3 em {
   line-height: 1;
   font-weight: 400;
 }
+.directory-feature {
+  max-width: 460px;
+  margin-bottom: 36px;
+}
 .section {
   padding: 88px 0;
 }

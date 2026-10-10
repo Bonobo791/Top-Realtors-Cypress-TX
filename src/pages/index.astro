@@ -9,8 +9,8 @@ const team = agents.find((agent) => agent.slug === SPONSORED_SLUG)!;
 ---
 
 <Base
-  title={'Cypress TX Realtors & Sourced Profiles | Top Realtors Cypress TX'}
-  description={`Compare ${agents.length} Cypress-area real estate profiles, HAR survey ratings and comments where available, agent specialties, official links and local community resources. Sponsored placements are labeled.`}
+  title={'Cypress TX Realtors Reviews | Top Realtors Cypress TX'}
+  description={`Compare ${agents.length} Cypress, Texas agent and team profiles, stated specialties, HAR feedback where available, official links, and local community resources. Sponsored placements are labeled.`}
   path="/"
   schema={directorySchema(agents)}
 >
@@ -23,26 +23,25 @@ const team = agents.find((agent) => agent.slug === SPONSORED_SLUG)!;
               Cypress, Texas · {agents.length} professional profiles
             </span>
             <h1>
-              Cypress realtors.
+              Compare Cypress, TX realtors.
               <br />
               Find your <em>personal fit.</em>
             </h1>
             <p class="lede">
-              Get to know {agents.length} real estate professionals and teams
-              serving the Cypress area. Compare their stated specialties and
-              recent HAR feedback where available. Use linked sources to prepare
-              for your first call.
+              Explore {agents.length} individual real estate agent and team
+              profiles serving Cypress, Texas. Compare stated specialties,
+              linked HAR ratings and comments where available, and official
+              professional profiles before your first call.
             </p>
             <div class="hero-actions">
               <a class="btn btn-gold" href="#directory">
-                Explore the directory
+                Compare agent profiles
               </a>
               <a class="text-link" href="#methodology">
-                How we use sources
+                How this guide is sourced
               </a>
             </div>
           </div>
-          <Featured agent={team} />
         </div>
         <figure class="hero-photo">
           <img
@@ -114,16 +113,19 @@ const team = agents.find((agent) => agent.slug === SPONSORED_SLUG)!;
               The directory · Sponsored first, then alphabetical
             </span>
             <h2>
-              Different people.
+              Explore the profiles.
               <br />
-              Your <em>personal fit.</em>
+              Find your <em>personal fit.</em>
             </h2>
           </div>
           <p>
-            Open each profile for sourced details, official links, and public
-            business contacts. This is a starting point for interviews, not a
-            performance ranking.
+            Compare each professional’s stated specialties, linked sources and
+            public business contacts. Use the profiles to prepare for
+            interviews; this directory is not a performance ranking.
           </p>
+        </div>
+        <div class="directory-feature">
+          <Featured agent={team} />
         </div>
         {agents.map((agent) => (
           <AgentRow agent={agent} rating={ratings[agent.slug]} />
