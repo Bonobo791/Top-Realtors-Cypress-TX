@@ -109,7 +109,7 @@ assert.equal(
   home('.agent-row').first().attr('data-profile'),
   'lippincott-team',
 );
-assert.equal(home('.feature-card .identity h2').text(), 'The Lippincott Team');
+assert.equal(home('.feature-card .identity h3').text(), 'The Lippincott Team');
 assert.equal(home('.feature-card .identity .btn').length, 0);
 assert.equal(home('.feature-card .sponsored-badge').length, 0);
 assert(

@@ -152,7 +152,7 @@ nav a {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.35fr 0.85fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 80px;
   align-items: start;
 }
@@ -299,6 +299,10 @@ h3 em {
   font-size: 36px;
   line-height: 1;
   font-weight: 400;
+}
+.directory-feature {
+  max-width: 460px;
+  margin-bottom: 36px;
 }
 .section {
   padding: 88px 0;
@@ -742,7 +746,6 @@ footer {
   }
   .hero-grid {
     gap: 42px;
-    grid-template-columns: 1.2fr 1fr;
   }
   .hero h1 {
     font-size: 66px;
